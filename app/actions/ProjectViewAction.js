@@ -11,7 +11,7 @@ class ProjectViewAction {
     getProject() {
         //http://api.diy.org/makers/{maker_name}/projects/{project_id}
 
-        $.ajax({ url: 'http://api.diy.org/makers/guitarbrain/projects/959892' })
+        $.ajax({ url: 'https://api.diy.org/makers/neptune/projects/814610' })
             .done((data) => {
                 console.log(data);
                 this.actions.getProjectSuccess(data.response)

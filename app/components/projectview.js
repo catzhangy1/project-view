@@ -26,16 +26,6 @@ class ProjectView extends React.Component {
     }
 
     render() {
-        //let leaderboardCharacters = this.state.characters.map((character) => {
-        //    return (
-        //        <li key={character.characterId}>
-        //            <Link to={'/characters/' + character.characterId}>
-        //                <img className='thumb-md' src={'http://image.eveonline.com/Character/' + character.characterId + '_128.jpg'} />
-        //            </Link>
-        //        </li>
-        //    )
-        //});
-
         return (
             <div className='project-container'>
                 <div className='row'>

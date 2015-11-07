@@ -54,6 +54,12 @@ img{
     max-width: 100%;
     border-radius: 5px;
 }
+
+.bi-section{
+    -webkit-column-count: 2;
+    -moz-column-count: 2;
+    column-count: 2;
+}
 /*footer {*/
     /*position: absolute;*/
     /*bottom: 0;*/

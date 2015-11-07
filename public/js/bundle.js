@@ -75,7 +75,7 @@ var ProjectViewAction = (function () {
 
             //http://api.diy.org/makers/{maker_name}/projects/{project_id}
 
-            $.ajax({ url: 'http://api.diy.org/makers/guitarbrain/projects/959892' }).done(function (data) {
+            $.ajax({ url: 'https://api.diy.org/makers/neptune/projects/814610' }).done(function (data) {
                 console.log(data);
                 _this.actions.getProjectSuccess(data.response);
             }).fail(function (jqXhr) {
@@ -289,16 +289,6 @@ var ProjectView = (function (_React$Component) {
     }, {
         key: 'render',
         value: function render() {
-            //let leaderboardCharacters = this.state.characters.map((character) => {
-            //    return (
-            //        <li key={character.characterId}>
-            //            <Link to={'/characters/' + character.characterId}>
-            //                <img className='thumb-md' src={'http://image.eveonline.com/Character/' + character.characterId + '_128.jpg'} />
-            //            </Link>
-            //        </li>
-            //    )
-            //});
-
             return _react2['default'].createElement(
                 'div',
                 { className: 'project-container' },
@@ -427,17 +417,54 @@ var Favourites = (function (_React$Component) {
     }, {
         key: 'render',
         value: function render() {
+            //let leaderboardCharacters = this.state.characters.map((character) => {
+            //    return (
+            //        <li key={character.characterId}>
+            //            <Link to={'/characters/' + character.characterId}>
+            //                <img className='thumb-md' src={'http://image.eveonline.com/Character/' + character.characterId + '_128.jpg'} />
+            //            </Link>
+            //        </li>
+            //    )
+            //});
+            var users = this.state.favourites.map(function (user) {
+                return _react2['default'].createElement(
+                    'div',
+                    null,
+                    _react2['default'].createElement('img', { src: user.icon }),
+                    ' ',
+                    _react2['default'].createElement(
+                        'span',
+                        null,
+                        ' ',
+                        user.username,
+                        ' '
+                    )
+                );
+            });
 
             return _react2['default'].createElement(
                 'div',
-                { className: 'header' },
-                _react2['default'].createElement('img', { src: 'img/favorite.svg', width: '24px', height: '24px' }),
+                null,
                 _react2['default'].createElement(
-                    'span',
-                    null,
-                    ' ',
-                    this.state.size,
-                    ' '
+                    'div',
+                    { className: 'header' },
+                    _react2['default'].createElement('img', { src: 'img/favorite.svg', width: '24px', height: '24px' }),
+                    _react2['default'].createElement(
+                        'span',
+                        null,
+                        ' ',
+                        this.state.size,
+                        ' Favourites'
+                    )
+                ),
+                _react2['default'].createElement(
+                    'div',
+                    { className: 'bi-section' },
+                    _react2['default'].createElement(
+                        'ul',
+                        null,
+                        users
+                    )
                 )
             )
             //<div className='project-container'>
@@ -529,16 +556,6 @@ var ProjectView = (function (_React$Component) {
     }, {
         key: 'render',
         value: function render() {
-            //let leaderboardCharacters = this.state.characters.map((character) => {
-            //    return (
-            //        <li key={character.characterId}>
-            //            <Link to={'/characters/' + character.characterId}>
-            //                <img className='thumb-md' src={'http://image.eveonline.com/Character/' + character.characterId + '_128.jpg'} />
-            //            </Link>
-            //        </li>
-            //    )
-            //});
-
             return _react2['default'].createElement(
                 'div',
                 { className: 'project-container' },
@@ -719,19 +736,12 @@ var FavouritesStore = (function () {
     _createClass(FavouritesStore, [{
         key: 'onGetFavouritesSuccess',
         value: function onGetFavouritesSuccess(data) {
-            //    const articles = responseData[0].articles;
-            //    const articlesMap = _.object(
-            //        _.map(_.values(articles), (a) => [a.uid, rawDataToPost(a)]));
-            //    postsCursor.merge(articlesMap);
-            //    sectionIdsCursor.merge({[section]: _.keys(articlesMap)});
-            //})
             this.favourites = data.map(function (a) {
                 return { "username": a.nickname,
                     "url": a.url,
                     "icon": a.avatar.icon.url };
             });
             this.size = data.length;
-            console.log(this.favourites);
         }
     }, {
         key: 'getDate',

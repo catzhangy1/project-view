@@ -22,12 +22,6 @@ class FavouritesStore {
     //};
 
     onGetFavouritesSuccess(data) {
-    //    const articles = responseData[0].articles;
-    //    const articlesMap = _.object(
-    //        _.map(_.values(articles), (a) => [a.uid, rawDataToPost(a)]));
-    //    postsCursor.merge(articlesMap);
-    //    sectionIdsCursor.merge({[section]: _.keys(articlesMap)});
-    //})
         this.favourites = data.map( function (a) {
         return {"username": a.nickname,
                 "url": a.url,
@@ -35,7 +29,6 @@ class FavouritesStore {
             }
         );
         this.size = data.length;
-        console.log(this.favourites);
     }
 
     getDate(data) {
