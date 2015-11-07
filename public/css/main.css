@@ -1,6 +1,16 @@
 /*
  * Bootstrap overrides.
  */
+
+@font-face {
+    font-family: ApexRounded;
+    src: url("../fonts/ApexRounded-Book.otf") format("opentype");
+}
+@font-face {
+    font-family: ApexRounded;
+    font-weight: bold;
+    src: url("../fonts/ApexRounded-Medium.otf") format("opentype");
+}
 html {
     position: relative;
     min-height: 100%;
@@ -8,31 +18,65 @@ html {
 body {
     margin-bottom: 220px;
     -webkit-font-smoothing: antialiased;
-    font-size: 24px;
+    font-family: "ApexRounded";
+    color: #414c52;
 }
-footer {
-    position: absolute;
-    bottom: 0;
-    width: 100%;
-    color: #fff;
-    background-color: #3b3f51;
+.outer-container {
+    margin-left: 15%;
+    margin-right: 15%;
 }
-footer a {
-    color: #fff;
-    text-decoration: underline;
+
+.outer-container .lower{
+    background-color: #F7F7F7;
 }
-footer a:hover,
-footer a:focus {
-    color: #fff;
-    text-decoration: none;
+.project-container {
+    margin-top: 40px;
+    margin-bottom: 40px;
 }
-footer .thumb-md {
-    border: 1px solid rgba(255, 255, 255, 0.15);
-    transition: border .1s linear;
+
+.project-container h3 {
+    font-weight: bold;
+    font-size: 30px;
 }
-footer .thumb-md:hover {
-    border-color: rgba(255, 255, 255, 0.3);
+
+.project-container p {
+    font-weight: bold;
+    color: #C4CBCC;
 }
+.project-container .img {
+    overflow: hidden;
+
+}
+.project-container footer {
+    color: #1489C4;
+}
+img{
+    max-width: 100%;
+    border-radius: 5px;
+}
+/*footer {*/
+    /*position: absolute;*/
+    /*bottom: 0;*/
+    /*width: 100%;*/
+    /*color: #fff;*/
+    /*background-color: #3b3f51;*/
+/*}*/
+/*footer a {*/
+    /*color: #fff;*/
+    /*text-decoration: underline;*/
+/*}*/
+/*footer a:hover,*/
+/*footer a:focus {*/
+    /*color: #fff;*/
+    /*text-decoration: none;*/
+/*}*/
+/*footer .thumb-md {*/
+    /*border: 1px solid rgba(255, 255, 255, 0.15);*/
+    /*transition: border .1s linear;*/
+/*}*/
+/*footer .thumb-md:hover {*/
+    /*border-color: rgba(255, 255, 255, 0.3);*/
+/*}*/
 .badge-danger {
     color: #fff;
     background-color: #f05150;
@@ -199,6 +243,10 @@ footer .thumb-md:hover {
 }
 .btn-default {
     box-shadow: 0 1px 1px rgba(91, 91, 91, 0.1);
+}
+#navbar {
+    height: 80px;
+    background-color: #414c52;
 }
 .navbar {
     border: 0;
