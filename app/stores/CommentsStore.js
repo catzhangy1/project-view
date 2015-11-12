@@ -10,11 +10,17 @@ class CommentsStore {
 
     onGetCommentsSuccess(data) {
         this.comments = data.map( function (a) {
-                return {"username": a.nickname,
-                    "url": a.url,
-                    "icon": a.avatar.icon.url}
+                return {"username": a.raw,
+                    "user": a.maker.nickname,
+                    "url": a.maker.url,
+                    "icon": a.maker.avatar.small.url,
+                    "date": a.stamp,
+                    "content": a.raw,
+                    "id": a.id,
+                    "replyId": a.reply}
             }
         );
+        console.log(this.comments);
         this.size = data.length;
     }
 
@@ -22,6 +28,12 @@ class CommentsStore {
     onGetCommentsFail(jqXhr) {
         // Handle multiple response formats, fallback to HTTP status code number.
         toastr.error(jqXhr.responseJSON && jqXhr.responseJSON.message || jqXhr.responseText || jqXhr.statusText);
+    }
+
+    getElapsed(data) {
+        const d = new Date(data);
+        return '12 d';
+        //return Math.floor((new Date() - d) / (1000 * 60 * 60 * 24));
     }
 }
 

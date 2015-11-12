@@ -2,9 +2,8 @@ import React from 'react';
 import {Link} from 'react-router';
 import CommentsStore from '../stores/CommentsStore';
 import CommentsActions from '../actions/CommentsActions';
-import CommentsDetail from "./CommentsDetail"
 
-class Comments extends React.Component {
+class CommentsDetail extends React.Component {
     constructor(props) {
         super(props);
         this.state = CommentsStore.getState();
@@ -13,7 +12,7 @@ class Comments extends React.Component {
 
     componentDidMount() {
         CommentsStore.listen(this.onChange);
-        CommentsActions.getComments();
+        //CommentsActions.getComments();
     }
 
     componentWillUnmount() {
@@ -25,23 +24,12 @@ class Comments extends React.Component {
     }
 
     render() {
-        let comments = this.state.comments.map(function (comment) {
-            return <CommentsDetail
-                        comment= {comment}/>
-        });
-
         return (
-            <div>
-                <div className='header-title'>
-                    <img src= "img/comment.svg" height='25px' width='25px'/>
-                    <span> {this.state.size} Comments</span>
-                </div>
-                <div>
-                    {comments}
-                </div>
+            <div className = 'comments'>
+                <img src= {this.props.comment.icon} width='60px'/> <span> {this.props.comment.username} </span>
             </div>
         );
     }
 }
 
-export default Comments;
+export default CommentsDetail;

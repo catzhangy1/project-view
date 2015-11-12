@@ -77,13 +77,24 @@ img{
     font-weight: 600;
     color: #2CA1DB;
 }
-.header-title{
+.header-title span{
     color: #414C52;
     font-weight: 600;
-    font-size: 18px;
-    padding-bottom: 15px;
+    font-size: 24px;
+    line-height: 40px;
+    vertical-align: -2px;
 }
 
+.comments-list .comments {
+    margin-bottom: .7em;
+}
+.comments {
+    background: #fff;
+    margin-left: 70px;
+    padding: 15px 10px 15px 20px;
+    border-radius: 4px;
+    position: relative;
+}
 .badge-danger {
     color: #fff;
     background-color: #f05150;

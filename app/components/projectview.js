@@ -13,8 +13,6 @@ class ProjectView extends React.Component {
     componentDidMount() {
         ProjectViewStore.listen(this.onChange);
         ProjectViewAction.getProject();
-        //FooterStore.listen(this.onChange);
-        //FooterActions.getTopCharacters();
     }
 
     componentWillUnmount() {
