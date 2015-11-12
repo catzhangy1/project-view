@@ -1,6 +1,7 @@
 import React from 'react';
 import ProjectView from './projectview';
 import Favourites from './favourites';
+import Comments from './comments';
 
 class App extends React.Component {
     render() {
@@ -15,7 +16,7 @@ class App extends React.Component {
                 <div className = 'inner-container'>
                     <div className='row'>
                         <div className='col-sm-8'>
-
+                            <Comments />
                         </div>
                         <div className='col-sm-4'>
                             <Favourites />
