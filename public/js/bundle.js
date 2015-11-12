@@ -260,14 +260,6 @@ var _react2 = _interopRequireDefault(_react);
 
 var _reactRouter = require('react-router');
 
-var _storesCommentsStore = require('../stores/CommentsStore');
-
-var _storesCommentsStore2 = _interopRequireDefault(_storesCommentsStore);
-
-var _actionsCommentsActions = require('../actions/CommentsActions');
-
-var _actionsCommentsActions2 = _interopRequireDefault(_actionsCommentsActions);
-
 var CommentsDetail = (function (_React$Component) {
     _inherits(CommentsDetail, _React$Component);
 
@@ -275,21 +267,15 @@ var CommentsDetail = (function (_React$Component) {
         _classCallCheck(this, CommentsDetail);
 
         _get(Object.getPrototypeOf(CommentsDetail.prototype), 'constructor', this).call(this, props);
-        this.state = _storesCommentsStore2['default'].getState();
         this.onChange = this.onChange.bind(this);
     }
 
     _createClass(CommentsDetail, [{
         key: 'componentDidMount',
-        value: function componentDidMount() {
-            _storesCommentsStore2['default'].listen(this.onChange);
-            //CommentsActions.getComments();
-        }
+        value: function componentDidMount() {}
     }, {
         key: 'componentWillUnmount',
-        value: function componentWillUnmount() {
-            _storesCommentsStore2['default'].unlisten(this.onChange);
-        }
+        value: function componentWillUnmount() {}
     }, {
         key: 'onChange',
         value: function onChange(state) {
@@ -298,10 +284,43 @@ var CommentsDetail = (function (_React$Component) {
     }, {
         key: 'render',
         value: function render() {
+            var comments = this.props.comment.splice(1).map(function (c) {
+                return _react2['default'].createElement(
+                    'div',
+                    { className: 'nested-comments-container' },
+                    _react2['default'].createElement('img', { src: c.icon, width: '60px' }),
+                    _react2['default'].createElement(
+                        'div',
+                        { className: 'comments' },
+                        _react2['default'].createElement(
+                            'span',
+                            null,
+                            ' ',
+                            _react2['default'].createElement(
+                                'strong',
+                                null,
+                                ' ',
+                                c.user,
+                                ' '
+                            ),
+                            ' ',
+                            c.date
+                        ),
+                        _react2['default'].createElement(
+                            'p',
+                            null,
+                            ' ',
+                            c.content,
+                            ' '
+                        )
+                    )
+                );
+            });
+
             return _react2['default'].createElement(
                 'div',
                 { className: 'comments-container' },
-                _react2['default'].createElement('img', { src: this.props.comment.icon, width: '60px' }),
+                _react2['default'].createElement('img', { src: this.props.comment[0].icon, width: '60px' }),
                 _react2['default'].createElement(
                     'div',
                     { className: 'comments' },
@@ -310,23 +329,28 @@ var CommentsDetail = (function (_React$Component) {
                         null,
                         ' ',
                         _react2['default'].createElement(
-                            'h1',
+                            'strong',
                             null,
                             ' ',
-                            this.props.comment.user,
+                            this.props.comment[0].user,
                             ' '
                         ),
                         ' ',
-                        this.props.comment.date
+                        this.props.comment[0].date
                     ),
                     _react2['default'].createElement(
                         'p',
                         null,
                         ' ',
-                        this.props.comment.content,
+                        this.props.comment[0].content,
                         ' '
                     ),
                     _react2['default'].createElement('span', { dangerouslySetInnerHTML: { __html: "<svg width='25px' height='25px'><use xlink:href='img/reply.svg#replySVG'></use></svg>" } })
+                ),
+                _react2['default'].createElement(
+                    'div',
+                    null,
+                    comments
                 )
             );
         }
@@ -338,7 +362,7 @@ var CommentsDetail = (function (_React$Component) {
 exports['default'] = CommentsDetail;
 module.exports = exports['default'];
 
-},{"../actions/CommentsActions":1,"../stores/CommentsStore":14,"react":"react","react-router":"react-router"}],7:[function(require,module,exports){
+},{"react":"react","react-router":"react-router"}],7:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -951,24 +975,74 @@ var CommentsStore = (function () {
 
         this.bindActions(_actionsCommentsActions2['default']);
         this.comments = [];
+        this.threadStarters = [];
+        this.commentsRaw = [];
         this.size = 0;
     }
 
     _createClass(CommentsStore, [{
         key: 'onGetCommentsSuccess',
         value: function onGetCommentsSuccess(data) {
-            this.comments = data.map(function (a) {
+            var _this = this;
+
+            this.commentsRaw = data.map(function (a) {
                 return {
                     "user": a.maker.nickname,
                     "url": a.maker.url,
                     "icon": a.maker.avatar.small.url,
-                    "date": a.stamp,
+                    "date": _this.getElapsed(a.stamp),
+                    "rawDate": a.stamp,
                     "content": a.raw,
                     "id": a.id,
                     "replyId": a.reply };
             });
+
+            this.threadStarters = this.commentsRaw.filter(function (a) {
+                return a.replyId == 0;
+            });
+            this.comments = this.threadStarters.map(function (a) {
+                return _this.commentsManager(a, _this.commentsRaw);
+            });
+
             console.log(this.comments);
             this.size = data.length;
+        }
+    }, {
+        key: 'commentsManager',
+        value: function commentsManager(obj, data) {
+            var commentblock = [];
+            commentblock.push([obj]);
+            var currentReplyIds = [obj.id];
+            var foundAll = false;
+
+            var _loop = function () {
+                var newReplyIds = [];
+                commentblock.push(data.filter(function (a) {
+                    var result = currentReplyIds.some(function (o) {
+                        return o == a.replyId;
+                    });
+                    if (result) {
+                        newReplyIds.push(a.id);
+                    };
+                    return result;
+                }));
+                if (newReplyIds.length > 0) {
+                    currentReplyIds = newReplyIds;
+                    newReplyIds = [];
+                } else {
+                    foundAll = true;
+                }
+            };
+
+            while (!foundAll) {
+                _loop();
+            }
+            commentblock.pop();
+            commentblock = commentblock.reduce(function (a, b) {
+                return a.concat(b);
+            });
+            console.log(commentblock);
+            return commentblock;
         }
     }, {
         key: 'onGetCommentsFail',
@@ -980,8 +1054,12 @@ var CommentsStore = (function () {
         key: 'getElapsed',
         value: function getElapsed(data) {
             var d = new Date(data);
-            return '12 d';
-            //return Math.floor((new Date() - d) / (1000 * 60 * 60 * 24));
+            var days = Math.floor((new Date() - d) / (1000 * 60 * 60 * 24));
+            if (days > 31) {
+                return Math.floor(days / 30) + "mo";
+            } else {
+                return days + "d";
+            }
         }
     }]);
 
