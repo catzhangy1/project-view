@@ -29,9 +29,9 @@ class ProjectView extends React.Component {
         return (
             <div className='project-container'>
                 <div className='row'>
-                    <div className='col-sm-8'>
+                    <div className='col-md-8'>
                         <img src={this.state.project.contentSrc}/></div>
-                    <div className='col-sm-4 img'>
+                    <div className='col-md-4 img'>
                         <h3>{this.state.project.title}</h3>
                         <p>{this.state.project.date}</p>
 

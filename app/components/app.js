@@ -5,11 +5,14 @@ import Favourites from './favourites';
 class App extends React.Component {
     render() {
         return (
-            <div>
-                <div className="outer-container">
-                    <ProjectView />
+            <div className='outer-container'>
+                <div className = 'upper-section'>
+                    <div className ='inner-container'>
+                        <ProjectView />
+                    </div>
                 </div>
-                <div className="outer-container lower">
+
+                <div className = 'inner-container'>
                     <div className='row'>
                         <div className='col-sm-8'>
 
@@ -19,6 +22,7 @@ class App extends React.Component {
                         </div>
                     </div>
                 </div>
+
             </div>
         );
     }

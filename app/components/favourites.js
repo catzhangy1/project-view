@@ -34,7 +34,7 @@ class Favourites extends React.Component {
         //    )
         //});
         let users = this.state.favourites.map(function (user) {
-            return <div>
+            return <div className = 'user'>
                     <img src= {user.icon}/> <span> {user.username} </span>
                 </div>
 
@@ -42,30 +42,14 @@ class Favourites extends React.Component {
 
         return (
             <div>
-            <div className='header'>
-                <img src= "img/favorite.svg" width='24px' height='24px'/>
-                <span> {this.state.size} Favourites</span>
-            </div>
-                <div className='bi-section'>
-                    <ul>{users}</ul>
-                    </div>
+                <div className='header-title'>
+                    <img src= "img/favorite.svg" width='24px' height='24px'/>
+                    <span> {this.state.size} Favourites</span>
                 </div>
-            //<div className='project-container'>
-            //    <div className='row'>
-            //        <div className='col-sm-8'>
-            //            <img src={this.state.project.contentSrc}/></div>
-            //        <div className='col-sm-4 img'>
-            //            <h3>{this.state.project.title}</h3>
-            //            <p>{this.state.project.date}</p>
-            //
-            //            <footer>
-            //                <img src={this.state.project.iconsrc} />
-            //                <span> {this.state.project.username} </span>
-            //            </footer>
-            //        </div>
-            //    </div>
-            //</div>
-
+                <div className='bi-section'>
+                    {users}
+                </div>
+            </div>
         );
     }
 }

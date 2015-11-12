@@ -149,15 +149,19 @@ var App = (function (_React$Component) {
         value: function render() {
             return _react2['default'].createElement(
                 'div',
-                null,
+                { className: 'outer-container' },
                 _react2['default'].createElement(
                     'div',
-                    { className: 'outer-container' },
-                    _react2['default'].createElement(_projectview2['default'], null)
+                    { className: 'upper-section' },
+                    _react2['default'].createElement(
+                        'div',
+                        { className: 'inner-container' },
+                        _react2['default'].createElement(_projectview2['default'], null)
+                    )
                 ),
                 _react2['default'].createElement(
                     'div',
-                    { className: 'outer-container lower' },
+                    { className: 'inner-container' },
                     _react2['default'].createElement(
                         'div',
                         { className: 'row' },
@@ -297,12 +301,12 @@ var ProjectView = (function (_React$Component) {
                     { className: 'row' },
                     _react2['default'].createElement(
                         'div',
-                        { className: 'col-sm-8' },
+                        { className: 'col-md-8' },
                         _react2['default'].createElement('img', { src: this.state.project.contentSrc })
                     ),
                     _react2['default'].createElement(
                         'div',
-                        { className: 'col-sm-4 img' },
+                        { className: 'col-md-4 img' },
                         _react2['default'].createElement(
                             'h3',
                             null,
@@ -429,7 +433,7 @@ var Favourites = (function (_React$Component) {
             var users = this.state.favourites.map(function (user) {
                 return _react2['default'].createElement(
                     'div',
-                    null,
+                    { className: 'user' },
                     _react2['default'].createElement('img', { src: user.icon }),
                     ' ',
                     _react2['default'].createElement(
@@ -447,7 +451,7 @@ var Favourites = (function (_React$Component) {
                 null,
                 _react2['default'].createElement(
                     'div',
-                    { className: 'header' },
+                    { className: 'header-title' },
                     _react2['default'].createElement('img', { src: 'img/favorite.svg', width: '24px', height: '24px' }),
                     _react2['default'].createElement(
                         'span',
@@ -460,30 +464,9 @@ var Favourites = (function (_React$Component) {
                 _react2['default'].createElement(
                     'div',
                     { className: 'bi-section' },
-                    _react2['default'].createElement(
-                        'ul',
-                        null,
-                        users
-                    )
+                    users
                 )
-            )
-            //<div className='project-container'>
-            //    <div className='row'>
-            //        <div className='col-sm-8'>
-            //            <img src={this.state.project.contentSrc}/></div>
-            //        <div className='col-sm-4 img'>
-            //            <h3>{this.state.project.title}</h3>
-            //            <p>{this.state.project.date}</p>
-            //
-            //            <footer>
-            //                <img src={this.state.project.iconsrc} />
-            //                <span> {this.state.project.username} </span>
-            //            </footer>
-            //        </div>
-            //    </div>
-            //</div>
-
-            ;
+            );
         }
     }]);
 
@@ -564,12 +547,12 @@ var ProjectView = (function (_React$Component) {
                     { className: 'row' },
                     _react2['default'].createElement(
                         'div',
-                        { className: 'col-sm-8' },
+                        { className: 'col-md-8' },
                         _react2['default'].createElement('img', { src: this.state.project.contentSrc })
                     ),
                     _react2['default'].createElement(
                         'div',
-                        { className: 'col-sm-4 img' },
+                        { className: 'col-md-4 img' },
                         _react2['default'].createElement(
                             'h3',
                             null,
@@ -823,7 +806,6 @@ var ProjectViewStore = (function () {
                 contentType: data.clips[0].type,
                 contentSrc: data.clips[0].assets.web_480.url
             };
-            console.log(this.project);
         }
     }, {
         key: 'getDate',
@@ -833,8 +815,8 @@ var ProjectViewStore = (function () {
             return [date[0], " ", date[1], ", ", date[2]].join("");
         }
     }, {
-        key: 'onGetTopCharactersFail',
-        value: function onGetTopCharactersFail(jqXhr) {
+        key: 'onGetProjectFail',
+        value: function onGetProjectFail(jqXhr) {
             // Handle multiple response formats, fallback to HTTP status code number.
             toastr.error(jqXhr.responseJSON && jqXhr.responseJSON.message || jqXhr.responseText || jqXhr.statusText);
         }

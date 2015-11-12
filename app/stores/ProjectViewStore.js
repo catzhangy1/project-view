@@ -35,7 +35,6 @@ class ProjectViewStore {
             contentType: data.clips[0].type,
             contentSrc: data.clips[0].assets.web_480.url
         }
-        console.log(this.project);
     }
 
     getDate(data) {
@@ -44,7 +43,7 @@ class ProjectViewStore {
         return [date[0], " ", date[1], ", ", date[2]].join("");
     }
 
-    onGetTopCharactersFail(jqXhr) {
+    onGetProjectFail(jqXhr) {
         // Handle multiple response formats, fallback to HTTP status code number.
         toastr.error(jqXhr.responseJSON && jqXhr.responseJSON.message || jqXhr.responseText || jqXhr.statusText);
     }
