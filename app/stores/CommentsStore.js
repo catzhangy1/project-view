@@ -9,12 +9,13 @@ class CommentsStore {
     }
 
     onGetCommentsSuccess(data) {
+        let _this = this;
         this.comments = data.map( function (a) {
                 return {
                     "user": a.maker.nickname,
                     "url": a.maker.url,
                     "icon": a.maker.avatar.small.url,
-                    "date": a.stamp,
+                    "date": _this.getElapsed(a.stamp),
                     "content": a.raw,
                     "id": a.id,
                     "replyId": a.reply}
@@ -32,8 +33,12 @@ class CommentsStore {
 
     getElapsed(data) {
         const d = new Date(data);
-        return '12 d';
-        //return Math.floor((new Date() - d) / (1000 * 60 * 60 * 24));
+        const days =  Math.floor((new Date() - d) / (1000 * 60 * 60 * 24));
+        if ( days > 31) {
+            return Math.floor(days/ 30) + "mo";
+        } else {
+            return days + "d";
+        }
     }
 }
 
