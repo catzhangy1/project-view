@@ -25,7 +25,7 @@ class Comments extends React.Component {
     }
 
     render() {
-        let comments = this.state.comments.map(function (comment) {
+        let comments = this.state.commentsRaw.map(function (comment) {
             return <CommentsDetail
                         comment= {comment}/>
         });

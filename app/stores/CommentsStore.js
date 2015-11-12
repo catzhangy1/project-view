@@ -5,24 +5,68 @@ class CommentsStore {
     constructor() {
         this.bindActions(CommentsActions);
         this.comments = [];
+        this.threadStarters = [];
+        this.commentsRaw = [];
         this.size = 0;
     }
 
     onGetCommentsSuccess(data) {
         let _this = this;
-        this.comments = data.map( function (a) {
+
+        this.commentsRaw = data.map( function (a) {
                 return {
                     "user": a.maker.nickname,
                     "url": a.maker.url,
                     "icon": a.maker.avatar.small.url,
                     "date": _this.getElapsed(a.stamp),
+                    "rawDate": a.stamp,
                     "content": a.raw,
                     "id": a.id,
                     "replyId": a.reply}
             }
         );
+
+        this.threadStarters = this.commentsRaw.filter( function(a){
+            return a.replyId == 0;
+        });
+        this.comments = this.threadStarters.map( function(a){
+            return _this.commentsManager(a, _this.commentsRaw);
+        })
+
         console.log(this.comments);
         this.size = data.length;
+    }
+
+    commentsManager(obj, data) {
+        let commentblock = [];
+        commentblock.push([obj]);
+        let currentReplyIds = [obj.id];
+        let foundAll = false;
+        while(!foundAll){
+            let newReplyIds = [];
+            commentblock.push(data.filter( function (a) {
+                var result = currentReplyIds.some( function (o) {
+                        return o == a.replyId;
+                    });
+                if(result) {
+                    newReplyIds.push(a.id);
+                };
+                return result;
+            }));
+            if(newReplyIds.length > 0){
+                currentReplyIds = newReplyIds;
+                newReplyIds = [];
+            } else {
+                foundAll = true;
+            }
+        }
+        commentblock.pop();
+        commentblock = commentblock.reduce(function (a, b){
+            return a.concat(b);
+        });
+        console.log(commentblock);
+        return commentblock;
+
     }
 
 
