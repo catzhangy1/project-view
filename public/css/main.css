@@ -40,8 +40,8 @@ body {
 }
 
 .project-container {
-    margin-top: 40px;
-    margin-bottom: 40px;
+    padding-top: 40px;
+    padding-bottom: 40px;
 }
 
 .project-container h3 {
