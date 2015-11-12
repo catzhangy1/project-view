@@ -10,7 +10,7 @@ class CommentsStore {
 
     onGetCommentsSuccess(data) {
         this.comments = data.map( function (a) {
-                return {"username": a.raw,
+                return {
                     "user": a.maker.nickname,
                     "url": a.maker.url,
                     "icon": a.maker.avatar.small.url,

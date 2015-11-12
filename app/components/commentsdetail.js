@@ -25,8 +25,15 @@ class CommentsDetail extends React.Component {
 
     render() {
         return (
-            <div className = 'comments'>
-                <img src= {this.props.comment.icon} width='60px'/> <span> {this.props.comment.username} </span>
+            <div className = 'comments-container'>
+                <img src= {this.props.comment.icon} width='60px' />
+                <div className = 'comments'>
+                    <span> <strong> {this.props.comment.user} </strong> {this.props.comment.date}</span>
+                    <p> {this.props.comment.content} </p>
+
+                    <span dangerouslySetInnerHTML={{__html: "<svg width='25px' height='25px'><use xlink:href='img/reply.svg#replySVG'></use></svg>"}} />
+
+                    </div>
             </div>
         );
     }

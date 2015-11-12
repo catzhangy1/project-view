@@ -300,15 +300,33 @@ var CommentsDetail = (function (_React$Component) {
         value: function render() {
             return _react2['default'].createElement(
                 'div',
-                { className: 'comments' },
+                { className: 'comments-container' },
                 _react2['default'].createElement('img', { src: this.props.comment.icon, width: '60px' }),
-                ' ',
                 _react2['default'].createElement(
-                    'span',
-                    null,
-                    ' ',
-                    this.props.comment.username,
-                    ' '
+                    'div',
+                    { className: 'comments' },
+                    _react2['default'].createElement(
+                        'span',
+                        null,
+                        ' ',
+                        _react2['default'].createElement(
+                            'h1',
+                            null,
+                            ' ',
+                            this.props.comment.user,
+                            ' '
+                        ),
+                        ' ',
+                        this.props.comment.date
+                    ),
+                    _react2['default'].createElement(
+                        'p',
+                        null,
+                        ' ',
+                        this.props.comment.content,
+                        ' '
+                    ),
+                    _react2['default'].createElement('span', { dangerouslySetInnerHTML: { __html: "<svg width='25px' height='25px'><use xlink:href='img/reply.svg#replySVG'></use></svg>" } })
                 )
             );
         }
@@ -940,7 +958,7 @@ var CommentsStore = (function () {
         key: 'onGetCommentsSuccess',
         value: function onGetCommentsSuccess(data) {
             this.comments = data.map(function (a) {
-                return { "username": a.raw,
+                return {
                     "user": a.maker.nickname,
                     "url": a.maker.url,
                     "icon": a.maker.avatar.small.url,
