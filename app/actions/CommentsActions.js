@@ -4,7 +4,9 @@ class CommentsActions {
     constructor() {
         this.generateActions(
             'getCommentsSuccess',
-            'getCommentsFail'
+            'getCommentsFail',
+            'getUserInfoSuccess',
+            'getUserInfoFail'
         );
     }
 
@@ -20,6 +22,19 @@ class CommentsActions {
                 this.actions.getCommentsFail(jqXhr)
             });
     }
+
+    postComment(data) {
+        $.ajax({ url: 'https://api.diy.org/makers/neptune/projects/814610/comments' })
+            .done((data) => {
+                console.log(data);
+                this.actions.getCommentsSuccess(data.response)
+            })
+            .fail((jqXhr) => {
+                this.actions.getCommentsFail(jqXhr)
+            });
+    }
+
+
 }
 
 export default alt.createActions(CommentsActions);

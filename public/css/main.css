@@ -29,6 +29,9 @@ body {
     -ms-flex: 1; /* IE 10 */
     flex: 1;
 }
+.col-md-8 img {
+    width: 100%;
+}
 .inner-container {
     margin-left: 15%;
     margin-right: 15%;
@@ -121,6 +124,27 @@ img{
 .comments svg #Export_Sheet{
     fill: #111;
 }
+
+textarea {
+    border: none;
+    box-shaddow: none;
+    -webkit-appearance: none;
+}
+textarea {
+    outline: none !important;
+    border: none;
+    box-shaddow: none;
+    -webkit-appearance: none;
+    resize: none;
+    overflow: hidden;
+    width:100%;
+}
+textarea:focus {
+    outline: none !important;
+    border: none;
+    box-shadow: none;
+}
+
 .badge-danger {
     color: #fff;
     background-color: #f05150;

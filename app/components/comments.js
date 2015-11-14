@@ -2,7 +2,8 @@ import React from 'react';
 import {Link} from 'react-router';
 import CommentsStore from '../stores/CommentsStore';
 import CommentsActions from '../actions/CommentsActions';
-import CommentsDetail from "./CommentsDetail"
+import CommentsDetail from "./CommentsDetail";
+import CommentForm from "./CommentForm";
 
 class Comments extends React.Component {
     constructor(props) {
@@ -39,6 +40,9 @@ class Comments extends React.Component {
                 <div>
                     {comments}
                 </div>
+
+                <CommentForm />
+
             </div>
         );
     }

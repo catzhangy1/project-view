@@ -19,7 +19,7 @@ var CommentsActions = (function () {
     function CommentsActions() {
         _classCallCheck(this, CommentsActions);
 
-        this.generateActions('getCommentsSuccess', 'getCommentsFail');
+        this.generateActions('getCommentsSuccess', 'getCommentsFail', 'getUserInfoSuccess', 'getUserInfoFail');
     }
 
     _createClass(CommentsActions, [{
@@ -34,6 +34,18 @@ var CommentsActions = (function () {
                 _this.actions.getCommentsSuccess(data.response);
             }).fail(function (jqXhr) {
                 _this.actions.getCommentsFail(jqXhr);
+            });
+        }
+    }, {
+        key: 'postComment',
+        value: function postComment(data) {
+            var _this2 = this;
+
+            $.ajax({ url: 'https://api.diy.org/makers/neptune/projects/814610/comments' }).done(function (data) {
+                console.log(data);
+                _this2.actions.getCommentsSuccess(data.response);
+            }).fail(function (jqXhr) {
+                _this2.actions.getCommentsFail(jqXhr);
             });
         }
     }]);
@@ -237,7 +249,129 @@ var App = (function (_React$Component) {
 exports['default'] = App;
 module.exports = exports['default'];
 
-},{"./comments":9,"./favourites":10,"./projectview":11,"react":"react"}],6:[function(require,module,exports){
+},{"./comments":10,"./favourites":11,"./projectview":12,"react":"react"}],6:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, '__esModule', {
+    value: true
+});
+
+var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+
+var _get = function get(_x, _x2, _x3) { var _again = true; _function: while (_again) { var object = _x, property = _x2, receiver = _x3; _again = false; if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { _x = parent; _x2 = property; _x3 = receiver; _again = true; desc = parent = undefined; continue _function; } } else if ('value' in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } } };
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+var _react = require('react');
+
+var _react2 = _interopRequireDefault(_react);
+
+var _reactRouter = require('react-router');
+
+var _actionsCommentsActions = require('../actions/CommentsActions');
+
+var _actionsCommentsActions2 = _interopRequireDefault(_actionsCommentsActions);
+
+var CommentForm = (function (_React$Component) {
+    _inherits(CommentForm, _React$Component);
+
+    function CommentForm(props) {
+        _classCallCheck(this, CommentForm);
+
+        _get(Object.getPrototypeOf(CommentForm.prototype), 'constructor', this).call(this, props);
+        this.onChange = this.onChange.bind(this);
+        this.state = {
+            icon: "",
+            username: "",
+            url: ""
+        };
+    }
+
+    _createClass(CommentForm, [{
+        key: 'componentDidMount',
+        value: function componentDidMount() {
+            //CommentsStore.listen(this.onChange);
+            //CommentsActions.getComments();
+            this.getUserInfo();
+            console.log(this.state);
+        }
+    }, {
+        key: 'getUserInfo',
+        value: function getUserInfo() {
+            var _this = this;
+
+            var result = {};
+            $.ajax({ url: 'https://api.diy.org/makers/catzhangy1' }).done(function (data) {
+
+                data = data.response;
+                _this.setState({
+                    username: data.nickname,
+                    url: data.url,
+                    icon: data.avatar.small.url
+
+                });
+            }).fail(function (jqXhr) {
+                console.log(jqXhr);
+                result = jqXhr;
+            });
+            return result;
+        }
+    }, {
+        key: 'componentWillUnmount',
+        value: function componentWillUnmount() {
+            CommentsStore.unlisten(this.onChange);
+        }
+    }, {
+        key: 'onChange',
+        value: function onChange(state) {
+            this.setState(state);
+        }
+    }, {
+        key: 'render',
+        value: function render() {
+            return _react2['default'].createElement(
+                'div',
+                { className: 'comments-container' },
+                _react2['default'].createElement('img', { src: this.state.icon, width: '60px' }),
+                _react2['default'].createElement(
+                    'div',
+                    { className: 'comments' },
+                    _react2['default'].createElement(
+                        'span',
+                        null,
+                        ' ',
+                        _react2['default'].createElement(
+                            'strong',
+                            null,
+                            ' ',
+                            this.state.username,
+                            ' '
+                        ),
+                        ' '
+                    ),
+                    _react2['default'].createElement(
+                        'form',
+                        { className: 'commentForm' },
+                        _react2['default'].createElement('textarea', { type: 'text', placeholder: 'Add a new comment' }),
+                        _react2['default'].createElement('br', null),
+                        _react2['default'].createElement('input', { type: 'submit', value: 'Post' })
+                    )
+                )
+            );
+        }
+    }]);
+
+    return CommentForm;
+})(_react2['default'].Component);
+
+exports['default'] = CommentForm;
+module.exports = exports['default'];
+
+},{"../actions/CommentsActions":1,"react":"react","react-router":"react-router"}],7:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -362,7 +496,7 @@ var CommentsDetail = (function (_React$Component) {
 exports['default'] = CommentsDetail;
 module.exports = exports['default'];
 
-},{"react":"react","react-router":"react-router"}],7:[function(require,module,exports){
+},{"react":"react","react-router":"react-router"}],8:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -409,7 +543,7 @@ var Home = (function (_React$Component) {
 exports['default'] = Home;
 module.exports = exports['default'];
 
-},{"react":"react"}],8:[function(require,module,exports){
+},{"react":"react"}],9:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -479,7 +613,7 @@ var ProjectView = (function (_React$Component) {
                     _react2['default'].createElement(
                         'div',
                         { className: 'col-md-8' },
-                        _react2['default'].createElement('img', { src: this.state.project.contentSrc })
+                        _react2['default'].createElement('img', { src: this.state.project.contentSrc, width: 'auto' })
                     ),
                     _react2['default'].createElement(
                         'div',
@@ -508,26 +642,7 @@ var ProjectView = (function (_React$Component) {
                         )
                     )
                 )
-            )
-            //<footer>
-            //    <div className='container'>
-            //        <div className='row'>
-            //            <div className='col-sm-5'>
-            //                <h3 className='lead'><strong>Information</strong> and <strong>Copyright</strong></h3>
-            //                <p>Powered by <strong>Node.js</strong>, <strong>MongoDB</strong> and <strong>React</strong> with Flux architecture and server-side rendering.</p>
-            //                <p>You may view the <a href='https://github.com/sahat/newedenfaces-react'>Source Code</a> behind this project on GitHub.</p>
-            //                <p>© 2015 Sahat Yalkabov.</p>
-            //            </div>
-            //            <div className='col-sm-7 hidden-xs'>
-            //                <h3 className='lead'><strong>Leaderboard</strong> Top 5 Characters</h3>
-            //                <ul className='list-inline'>
-            //
-            //                </ul>
-            //            </div>
-            //        </div>
-            //    </div>
-            //</footer>
-            ;
+            );
         }
     }]);
 
@@ -537,7 +652,7 @@ var ProjectView = (function (_React$Component) {
 exports['default'] = ProjectView;
 module.exports = exports['default'];
 
-},{"../actions/ProjectViewAction":3,"../stores/ProjectViewStore":16,"react":"react","react-router":"react-router"}],9:[function(require,module,exports){
+},{"../actions/ProjectViewAction":3,"../stores/ProjectViewStore":17,"react":"react","react-router":"react-router"}],10:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -571,6 +686,10 @@ var _actionsCommentsActions2 = _interopRequireDefault(_actionsCommentsActions);
 var _CommentsDetail = require("./CommentsDetail");
 
 var _CommentsDetail2 = _interopRequireDefault(_CommentsDetail);
+
+var _CommentForm = require("./CommentForm");
+
+var _CommentForm2 = _interopRequireDefault(_CommentForm);
 
 var Comments = (function (_React$Component) {
     _inherits(Comments, _React$Component);
@@ -626,7 +745,8 @@ var Comments = (function (_React$Component) {
                     'div',
                     null,
                     comments
-                )
+                ),
+                _react2['default'].createElement(_CommentForm2['default'], null)
             );
         }
     }]);
@@ -637,7 +757,7 @@ var Comments = (function (_React$Component) {
 exports['default'] = Comments;
 module.exports = exports['default'];
 
-},{"../actions/CommentsActions":1,"../stores/CommentsStore":14,"./CommentsDetail":6,"react":"react","react-router":"react-router"}],10:[function(require,module,exports){
+},{"../actions/CommentsActions":1,"../stores/CommentsStore":15,"./CommentForm":6,"./CommentsDetail":7,"react":"react","react-router":"react-router"}],11:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -753,7 +873,7 @@ var Favourites = (function (_React$Component) {
 exports['default'] = Favourites;
 module.exports = exports['default'];
 
-},{"../actions/FavouritesActions":2,"../stores/FavouritesStore":15,"react":"react","react-router":"react-router"}],11:[function(require,module,exports){
+},{"../actions/FavouritesActions":2,"../stores/FavouritesStore":16,"react":"react","react-router":"react-router"}],12:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -823,7 +943,7 @@ var ProjectView = (function (_React$Component) {
                     _react2['default'].createElement(
                         'div',
                         { className: 'col-md-8' },
-                        _react2['default'].createElement('img', { src: this.state.project.contentSrc })
+                        _react2['default'].createElement('img', { src: this.state.project.contentSrc, width: 'auto' })
                     ),
                     _react2['default'].createElement(
                         'div',
@@ -852,26 +972,7 @@ var ProjectView = (function (_React$Component) {
                         )
                     )
                 )
-            )
-            //<footer>
-            //    <div className='container'>
-            //        <div className='row'>
-            //            <div className='col-sm-5'>
-            //                <h3 className='lead'><strong>Information</strong> and <strong>Copyright</strong></h3>
-            //                <p>Powered by <strong>Node.js</strong>, <strong>MongoDB</strong> and <strong>React</strong> with Flux architecture and server-side rendering.</p>
-            //                <p>You may view the <a href='https://github.com/sahat/newedenfaces-react'>Source Code</a> behind this project on GitHub.</p>
-            //                <p>© 2015 Sahat Yalkabov.</p>
-            //            </div>
-            //            <div className='col-sm-7 hidden-xs'>
-            //                <h3 className='lead'><strong>Leaderboard</strong> Top 5 Characters</h3>
-            //                <ul className='list-inline'>
-            //
-            //                </ul>
-            //            </div>
-            //        </div>
-            //    </div>
-            //</footer>
-            ;
+            );
         }
     }]);
 
@@ -881,7 +982,7 @@ var ProjectView = (function (_React$Component) {
 exports['default'] = ProjectView;
 module.exports = exports['default'];
 
-},{"../actions/ProjectViewAction":3,"../stores/ProjectViewStore":16,"react":"react","react-router":"react-router"}],12:[function(require,module,exports){
+},{"../actions/ProjectViewAction":3,"../stores/ProjectViewStore":17,"react":"react","react-router":"react-router"}],13:[function(require,module,exports){
 'use strict';
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
@@ -914,7 +1015,7 @@ _reactDom2['default'].render(_react2['default'].createElement(
   _routes2['default']
 ), document.getElementById('app'));
 
-},{"./routes":13,"history/lib/createBrowserHistory":23,"react":"react","react-dom":"react-dom","react-router":"react-router"}],13:[function(require,module,exports){
+},{"./routes":14,"history/lib/createBrowserHistory":24,"react":"react","react-dom":"react-dom","react-router":"react-router"}],14:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -948,7 +1049,7 @@ exports['default'] = _react2['default'].createElement(
 );
 module.exports = exports['default'];
 
-},{"./components/App":5,"./components/Home":7,"./components/ProjectView":8,"react":"react","react-router":"react-router"}],14:[function(require,module,exports){
+},{"./components/App":5,"./components/Home":8,"./components/ProjectView":9,"react":"react","react-router":"react-router"}],15:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -1069,7 +1170,7 @@ var CommentsStore = (function () {
 exports['default'] = _alt2['default'].createStore(CommentsStore);
 module.exports = exports['default'];
 
-},{"../actions/CommentsActions":1,"../alt":4}],15:[function(require,module,exports){
+},{"../actions/CommentsActions":1,"../alt":4}],16:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -1143,7 +1244,7 @@ var FavouritesStore = (function () {
 exports['default'] = _alt2['default'].createStore(FavouritesStore);
 module.exports = exports['default'];
 
-},{"../actions/FavouritesActions":2,"../alt":4}],16:[function(require,module,exports){
+},{"../actions/FavouritesActions":2,"../alt":4}],17:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -1224,7 +1325,7 @@ var ProjectViewStore = (function () {
 exports['default'] = _alt2['default'].createStore(ProjectViewStore);
 module.exports = exports['default'];
 
-},{"../actions/ProjectViewAction":3,"../alt":4}],17:[function(require,module,exports){
+},{"../actions/ProjectViewAction":3,"../alt":4}],18:[function(require,module,exports){
 // shim for using process in browser
 
 var process = module.exports = {};
@@ -1317,7 +1418,7 @@ process.chdir = function (dir) {
 };
 process.umask = function() { return 0; };
 
-},{}],18:[function(require,module,exports){
+},{}],19:[function(require,module,exports){
 /**
  * Indicates that navigation was caused by a call to history.push.
  */
@@ -1349,7 +1450,7 @@ exports['default'] = {
   REPLACE: REPLACE,
   POP: POP
 };
-},{}],19:[function(require,module,exports){
+},{}],20:[function(require,module,exports){
 "use strict";
 
 exports.__esModule = true;
@@ -1376,7 +1477,7 @@ function loopAsync(turns, work, callback) {
 
   next();
 }
-},{}],20:[function(require,module,exports){
+},{}],21:[function(require,module,exports){
 /*eslint-disable no-empty */
 'use strict';
 
@@ -1425,7 +1526,7 @@ function readState(key) {
 
   return null;
 }
-},{"warning":34}],21:[function(require,module,exports){
+},{"warning":35}],22:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -1501,13 +1602,13 @@ function supportsGoWithoutReloadUsingHash() {
   var ua = navigator.userAgent;
   return ua.indexOf('Firefox') === -1;
 }
-},{}],22:[function(require,module,exports){
+},{}],23:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
 var canUseDOM = !!(typeof window !== 'undefined' && window.document && window.document.createElement);
 exports.canUseDOM = canUseDOM;
-},{}],23:[function(require,module,exports){
+},{}],24:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -1680,7 +1781,7 @@ function createBrowserHistory() {
 
 exports['default'] = createBrowserHistory;
 module.exports = exports['default'];
-},{"./Actions":18,"./DOMStateStorage":20,"./DOMUtils":21,"./ExecutionEnvironment":22,"./createDOMHistory":24,"invariant":33}],24:[function(require,module,exports){
+},{"./Actions":19,"./DOMStateStorage":21,"./DOMUtils":22,"./ExecutionEnvironment":23,"./createDOMHistory":25,"invariant":34}],25:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -1721,7 +1822,7 @@ function createDOMHistory(options) {
 
 exports['default'] = createDOMHistory;
 module.exports = exports['default'];
-},{"./DOMUtils":21,"./ExecutionEnvironment":22,"./createHistory":25,"invariant":33}],25:[function(require,module,exports){
+},{"./DOMUtils":22,"./ExecutionEnvironment":23,"./createHistory":26,"invariant":34}],26:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -1969,7 +2070,7 @@ function createHistory() {
 
 exports['default'] = createHistory;
 module.exports = exports['default'];
-},{"./Actions":18,"./AsyncUtils":19,"./createLocation":26,"./deprecate":27,"./runTransitionHook":29,"deep-equal":30}],26:[function(require,module,exports){
+},{"./Actions":19,"./AsyncUtils":20,"./createLocation":27,"./deprecate":28,"./runTransitionHook":30,"deep-equal":31}],27:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -2006,7 +2107,7 @@ function createLocation() {
 
 exports['default'] = createLocation;
 module.exports = exports['default'];
-},{"./Actions":18,"./parsePath":28}],27:[function(require,module,exports){
+},{"./Actions":19,"./parsePath":29}],28:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -2026,7 +2127,7 @@ function deprecate(fn, message) {
 
 exports['default'] = deprecate;
 module.exports = exports['default'];
-},{"warning":34}],28:[function(require,module,exports){
+},{"warning":35}],29:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -2075,7 +2176,7 @@ function parsePath(path) {
 
 exports['default'] = parsePath;
 module.exports = exports['default'];
-},{"warning":34}],29:[function(require,module,exports){
+},{"warning":35}],30:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -2100,7 +2201,7 @@ function runTransitionHook(hook, location, callback) {
 
 exports['default'] = runTransitionHook;
 module.exports = exports['default'];
-},{"warning":34}],30:[function(require,module,exports){
+},{"warning":35}],31:[function(require,module,exports){
 var pSlice = Array.prototype.slice;
 var objectKeys = require('./lib/keys.js');
 var isArguments = require('./lib/is_arguments.js');
@@ -2196,7 +2297,7 @@ function objEquiv(a, b, opts) {
   return typeof a === typeof b;
 }
 
-},{"./lib/is_arguments.js":31,"./lib/keys.js":32}],31:[function(require,module,exports){
+},{"./lib/is_arguments.js":32,"./lib/keys.js":33}],32:[function(require,module,exports){
 var supportsArgumentsClass = (function(){
   return Object.prototype.toString.call(arguments)
 })() == '[object Arguments]';
@@ -2218,7 +2319,7 @@ function unsupported(object){
     false;
 };
 
-},{}],32:[function(require,module,exports){
+},{}],33:[function(require,module,exports){
 exports = module.exports = typeof Object.keys === 'function'
   ? Object.keys : shim;
 
@@ -2229,7 +2330,7 @@ function shim (obj) {
   return keys;
 }
 
-},{}],33:[function(require,module,exports){
+},{}],34:[function(require,module,exports){
 (function (process){
 /**
  * Copyright 2013-2015, Facebook, Inc.
@@ -2286,7 +2387,7 @@ var invariant = function(condition, format, a, b, c, d, e, f) {
 module.exports = invariant;
 
 }).call(this,require('_process'))
-},{"_process":17}],34:[function(require,module,exports){
+},{"_process":18}],35:[function(require,module,exports){
 (function (process){
 /**
  * Copyright 2014-2015, Facebook, Inc.
@@ -2350,4 +2451,4 @@ if (process.env.NODE_ENV !== 'production') {
 module.exports = warning;
 
 }).call(this,require('_process'))
-},{"_process":17}]},{},[12]);
+},{"_process":18}]},{},[13]);

@@ -8,6 +8,8 @@ class CommentsStore {
         this.threadStarters = [];
         this.commentsRaw = [];
         this.size = 0;
+
+
     }
 
     onGetCommentsSuccess(data) {
