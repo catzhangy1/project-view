@@ -111,18 +111,14 @@ img{
     margin-bottom: .7em;
 }
 
-.comments .svg {
+.comments > img {
     position: absolute;
     right: 15px;
     bottom: 10px;
-    fill: #E6E6E6;
 }
-.comments svg:focus,
-.comments svg:hover{
-    fill: #2CA1DB;
-}
-.comments svg #Export_Sheet{
-    fill: #111;
+.comments >img:focus,
+.comments >img:hover{
+    background-color: #2CA1DB;
 }
 
 textarea {
@@ -159,9 +155,7 @@ textarea:focus {
     margin-left: 0;
     border-left: 0;
 }
-.replySVG {
-    fill: #E6E6E6;
-}
+
 /*
  * Character profile page styles.
  */

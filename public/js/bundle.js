@@ -29,7 +29,7 @@ var CommentsActions = (function () {
 
             //http://api.diy.org/makers/{maker_name}/projects/{project_id}
 
-            $.ajax({ url: 'https://api.diy.org/makers/hivetest/projects/566218/comments' }).done(function (data) {
+            $.ajax({ url: 'http://api.diy.org/makers/hivetest/projects/566218/comments' }).done(function (data) {
                 console.log(data);
                 _this.actions.getCommentsSuccess(data.response);
             }).fail(function (jqXhr) {
@@ -37,15 +37,17 @@ var CommentsActions = (function () {
             });
         }
     }, {
-        key: 'postComment',
-        value: function postComment(data) {
-            var _this2 = this;
-
-            $.ajax({ url: 'https://api.diy.org/makers/neptune/projects/814610/comments' }).done(function (data) {
+        key: 'postComments',
+        value: function postComments(body) {
+            console.log(body);
+            $.ajax({ url: 'http://api.diy.org/makers/hivetest/projects/566218/comments',
+                headers: { 'x-diy-api-token': '30b28060b2b06a954c334ad2c92a8d85b58316d9' },
+                type: 'POST',
+                processData: false,
+                data: body }).done(function (data) {
                 console.log(data);
-                _this2.actions.getCommentsSuccess(data.response);
             }).fail(function (jqXhr) {
-                _this2.actions.getCommentsFail(jqXhr);
+                console.log(jqXhr);
             });
         }
     }]);
@@ -324,15 +326,12 @@ var CommentForm = (function (_React$Component) {
         key: 'handleSubmit',
         value: function handleSubmit(e) {
             e.preventDefault();
-
             var body = this.refs.text.value.trim();
-
-            console.log(body);
             if (!body) {
                 return;
             }
+            var number = 2783718;
             this.props.postComments({ raw: body });
-
             this.refs.text.value = '';
         }
     }, {
@@ -467,7 +466,8 @@ var CommentsDetail = (function (_React$Component) {
                             ' ',
                             c.content,
                             ' '
-                        )
+                        ),
+                        _react2['default'].createElement('img', { src: 'img/reply.svg', height: '25px', width: '25px' })
                     )
                 );
             });
@@ -500,7 +500,7 @@ var CommentsDetail = (function (_React$Component) {
                         this.props.comment[0].content,
                         ' '
                     ),
-                    _react2['default'].createElement('span', { dangerouslySetInnerHTML: { __html: "<svg width='25px' height='25px'><use xlink:href='img/reply.svg#replySVG'></use></svg>" } })
+                    _react2['default'].createElement('img', { src: 'img/reply.svg', height: '25px', width: '25px' })
                 ),
                 _react2['default'].createElement(
                     'div',
@@ -735,20 +735,6 @@ var Comments = (function (_React$Component) {
             _storesCommentsStore2['default'].unlisten(this.onChange);
         }
     }, {
-        key: 'postComments',
-        value: function postComments(body) {
-            console.log('postComments');
-            $.ajax({ url: 'https://api.diy.org/makers/hivetest/projects/566218/comments',
-                headers: { 'x-diy-api-token': '30b28060b2b06a954c334ad2c92a8d85b58316d9' },
-                type: 'POST',
-                dataType: 'json',
-                data: body }).done(function (data) {
-                console.log(data);
-            }).fail(function (jqXhr) {
-                console.log(jqXhr);
-            });
-        }
-    }, {
         key: 'onChange',
         value: function onChange(state) {
             this.setState(state);
@@ -781,7 +767,7 @@ var Comments = (function (_React$Component) {
                     null,
                     comments
                 ),
-                _react2['default'].createElement(_CommentForm2['default'], { postComments: this.postComments })
+                _react2['default'].createElement(_CommentForm2['default'], { postComments: _actionsCommentsActions2['default'].postComments })
             );
         }
     }]);

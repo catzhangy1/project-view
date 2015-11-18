@@ -24,6 +24,7 @@ class CommentsDetail extends React.Component {
                 <div className = 'comments'>
                     <span> <strong> {c.user} </strong> {c.date}</span>
                     <p> {c.content} </p>
+                    <img src= "img/reply.svg" height='25px' width='25px'/>
                 </div>
             </div>)
         });
@@ -34,9 +35,7 @@ class CommentsDetail extends React.Component {
                 <div className = 'comments'>
                     <span> <strong> {this.props.comment[0].user} </strong> {this.props.comment[0].date}</span>
                     <p> {this.props.comment[0].content} </p>
-
-                    <span dangerouslySetInnerHTML={{__html: "<svg width='25px' height='25px'><use xlink:href='img/reply.svg#replySVG'></use></svg>"}} />
-
+                    <img src= "img/reply.svg" height='25px' width='25px'/>
                 </div>
                 <div>
                     {comments}

@@ -47,7 +47,8 @@ class CommentForm extends React.Component {
         if(!body){
             return;
         }
-        this.props.postComments({raw: body, reply: 0});
+        let number = 2783718;
+        this.props.postComments({raw: body});
         this.refs.text.value = '';
     }
 
