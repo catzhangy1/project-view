@@ -21,6 +21,21 @@ class Comments extends React.Component {
         CommentsStore.unlisten(this.onChange);
     }
 
+    postComments(body) {
+        console.log('postComments');
+        $.ajax({ url: 'https://api.diy.org/makers/hivetest/projects/566218/comments',
+                 headers: {'x-diy-api-token': '30b28060b2b06a954c334ad2c92a8d85b58316d9'},
+                 type: 'POST',
+                 dataType: 'json',
+                 data: body })
+            .done((data) => {
+                console.log(data);
+            })
+            .fail((jqXhr) => {
+                console.log(jqXhr);
+            });
+    }
+
     onChange(state) {
         this.setState(state);
     }
@@ -41,7 +56,7 @@ class Comments extends React.Component {
                     {comments}
                 </div>
 
-                <CommentForm />
+                <CommentForm postComments={this.postComments}/>
 
             </div>
         );

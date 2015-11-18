@@ -13,7 +13,7 @@ class CommentsActions {
     getComments() {
         //http://api.diy.org/makers/{maker_name}/projects/{project_id}
 
-        $.ajax({ url: 'https://api.diy.org/makers/neptune/projects/814610/comments' })
+        $.ajax({ url: 'https://api.diy.org/makers/hivetest/projects/566218/comments' })
             .done((data) => {
                 console.log(data);
                 this.actions.getCommentsSuccess(data.response)

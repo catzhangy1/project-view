@@ -29,7 +29,7 @@ var CommentsActions = (function () {
 
             //http://api.diy.org/makers/{maker_name}/projects/{project_id}
 
-            $.ajax({ url: 'https://api.diy.org/makers/neptune/projects/814610/comments' }).done(function (data) {
+            $.ajax({ url: 'https://api.diy.org/makers/hivetest/projects/566218/comments' }).done(function (data) {
                 console.log(data);
                 _this.actions.getCommentsSuccess(data.response);
             }).fail(function (jqXhr) {
@@ -133,7 +133,7 @@ var ProjectViewAction = (function () {
 
             //http://api.diy.org/makers/{maker_name}/projects/{project_id}
 
-            $.ajax({ url: 'https://api.diy.org/makers/neptune/projects/814610' }).done(function (data) {
+            $.ajax({ url: 'https://api.diy.org/makers/hivetest/projects/566218/' }).done(function (data) {
                 console.log(data);
                 _this.actions.getProjectSuccess(data.response);
             }).fail(function (jqXhr) {
@@ -287,8 +287,10 @@ var CommentForm = (function (_React$Component) {
         this.state = {
             icon: "",
             username: "",
-            url: ""
+            url: "",
+            value: ""
         };
+        console.log(this);
     }
 
     _createClass(CommentForm, [{
@@ -306,19 +308,38 @@ var CommentForm = (function (_React$Component) {
 
             var result = {};
             $.ajax({ url: 'https://api.diy.org/makers/catzhangy1' }).done(function (data) {
-
                 data = data.response;
                 _this.setState({
                     username: data.nickname,
                     url: data.url,
                     icon: data.avatar.small.url
-
                 });
             }).fail(function (jqXhr) {
                 console.log(jqXhr);
                 result = jqXhr;
             });
             return result;
+        }
+    }, {
+        key: 'handleSubmit',
+        value: function handleSubmit(e) {
+            e.preventDefault();
+
+            var body = this.refs.text.value.trim();
+
+            console.log(body);
+            if (!body) {
+                return;
+            }
+            this.props.postComments({ raw: body });
+
+            this.refs.text.value = '';
+        }
+    }, {
+        key: 'handleChange',
+        value: function handleChange(e) {
+            console.log(e);
+            //this.setState({value: e.target.value});
         }
     }, {
         key: 'componentWillUnmount',
@@ -355,8 +376,8 @@ var CommentForm = (function (_React$Component) {
                     ),
                     _react2['default'].createElement(
                         'form',
-                        { className: 'commentForm' },
-                        _react2['default'].createElement('textarea', { type: 'text', placeholder: 'Add a new comment' }),
+                        { className: 'commentForm', onSubmit: this.handleSubmit.bind(this) },
+                        _react2['default'].createElement('textarea', { type: 'text', maxLength: '140', placeholder: 'Add a new comment', ref: 'text' }),
                         _react2['default'].createElement('br', null),
                         _react2['default'].createElement('input', { type: 'submit', value: 'Post' })
                     )
@@ -714,6 +735,20 @@ var Comments = (function (_React$Component) {
             _storesCommentsStore2['default'].unlisten(this.onChange);
         }
     }, {
+        key: 'postComments',
+        value: function postComments(body) {
+            console.log('postComments');
+            $.ajax({ url: 'https://api.diy.org/makers/hivetest/projects/566218/comments',
+                headers: { 'x-diy-api-token': '30b28060b2b06a954c334ad2c92a8d85b58316d9' },
+                type: 'POST',
+                dataType: 'json',
+                data: body }).done(function (data) {
+                console.log(data);
+            }).fail(function (jqXhr) {
+                console.log(jqXhr);
+            });
+        }
+    }, {
         key: 'onChange',
         value: function onChange(state) {
             this.setState(state);
@@ -746,7 +781,7 @@ var Comments = (function (_React$Component) {
                     null,
                     comments
                 ),
-                _react2['default'].createElement(_CommentForm2['default'], null)
+                _react2['default'].createElement(_CommentForm2['default'], { postComments: this.postComments })
             );
         }
     }]);
@@ -1199,19 +1234,6 @@ var FavouritesStore = (function () {
         this.favourites = [];
         this.size = 0;
     }
-
-    //const rawDataToPost = (a) => {
-    //    return {
-    //        title: unescape(a.headline),
-    //        body: unescape(a.copy),
-    //        teaser: extractHtmlText(unescape(a.abstract)),
-    //        published: new Date(a.published * 1000),
-    //        authors: _.map(_.values(a.getAuthor), (author) => unescape(author)),
-    //        images: _.map(_.values(a.media), cleanMedia),
-    //        tags: _.map(_.values(a.tags), cleanTag),
-    //        url: unescape(a.getURL),
-    //    };
-    //};
 
     _createClass(FavouritesStore, [{
         key: 'onGetFavouritesSuccess',

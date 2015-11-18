@@ -9,8 +9,10 @@ class CommentForm extends React.Component {
         this.state = {
             icon: "",
             username: "",
-            url: ""
+            url: "",
+            value: ""
         };
+        console.log(this);
     }
 
     componentDidMount() {
@@ -39,6 +41,21 @@ class CommentForm extends React.Component {
         return result;
     }
 
+    handleSubmit(e) {
+        e.preventDefault();
+        let body = this.refs.text.value.trim();
+        if(!body){
+            return;
+        }
+        this.props.postComments({raw: body, reply: 0});
+        this.refs.text.value = '';
+    }
+
+    handleChange(e) {
+        console.log(e);
+        //this.setState({value: e.target.value});
+    }
+
     componentWillUnmount() {
         CommentsStore.unlisten(this.onChange);
     }
@@ -54,10 +71,10 @@ class CommentForm extends React.Component {
             <img src= {this.state.icon} width='60px' />
             <div className = 'comments'>
                 <span> <strong> {this.state.username} </strong> </span>
-                <form className="commentForm">
-                    <textarea type="text" maxlength="140" placeholder="Add a new comment" />
+                <form className="commentForm" onSubmit={this.handleSubmit.bind(this)}>
+                    <textarea type="text" maxLength="140" placeholder="Add a new comment" ref="text"/>
                     <br/>
-                    <input type="submit" value="Post!" />
+                    <input type="submit" value="Post"/>
                 </form>
             </div>
         </div>

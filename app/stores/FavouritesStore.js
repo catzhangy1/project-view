@@ -8,19 +8,6 @@ class FavouritesStore {
         this.size = 0;
     }
 
-    //const rawDataToPost = (a) => {
-    //    return {
-    //        title: unescape(a.headline),
-    //        body: unescape(a.copy),
-    //        teaser: extractHtmlText(unescape(a.abstract)),
-    //        published: new Date(a.published * 1000),
-    //        authors: _.map(_.values(a.getAuthor), (author) => unescape(author)),
-    //        images: _.map(_.values(a.media), cleanMedia),
-    //        tags: _.map(_.values(a.tags), cleanTag),
-    //        url: unescape(a.getURL),
-    //    };
-    //};
-
     onGetFavouritesSuccess(data) {
         this.favourites = data.map( function (a) {
         return {"username": a.nickname,
