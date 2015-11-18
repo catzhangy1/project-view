@@ -8,6 +8,8 @@ class CommentsStore {
         this.threadStarters = [];
         this.commentsRaw = [];
         this.size = 0;
+        this.currentReplyTo = null;
+        this.currentReplyToUser = '';
 
 
     }
@@ -34,8 +36,6 @@ class CommentsStore {
         this.comments = this.threadStarters.map( function(a){
             return _this.commentsManager(a, _this.commentsRaw);
         })
-
-        console.log(this.comments);
         this.size = data.length;
     }
 
@@ -66,7 +66,7 @@ class CommentsStore {
         commentblock = commentblock.reduce(function (a, b){
             return a.concat(b);
         });
-        console.log(commentblock);
+
         return commentblock;
 
     }

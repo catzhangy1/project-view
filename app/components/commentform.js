@@ -12,15 +12,10 @@ class CommentForm extends React.Component {
             url: "",
             value: ""
         };
-        console.log(this);
     }
 
     componentDidMount() {
-        //CommentsStore.listen(this.onChange);
-        //CommentsActions.getComments();
         this.getUserInfo();
-        console.log(this.state);
-
     }
 
     getUserInfo() {
@@ -52,9 +47,9 @@ class CommentForm extends React.Component {
         this.refs.text.value = '';
     }
 
-    handleChange(e) {
-        console.log(e);
-        //this.setState({value: e.target.value});
+    update() {
+        let newValue = this.refs.text.value;
+        this.props.updateValue(newValue);
     }
 
     componentWillUnmount() {
@@ -67,21 +62,19 @@ class CommentForm extends React.Component {
 
     render() {
         return (
+            <div className='comments-container'>
+                <img src={this.state.icon} width='60px'/>
 
-        <div className = 'comments-container'>
-            <img src= {this.state.icon} width='60px' />
-            <div className = 'comments'>
-                <span> <strong> {this.state.username} </strong> </span>
-                <div className ="form-container">
-                    <form className="commentForm" onSubmit={this.handleSubmit.bind(this)}>
-                        <textarea type="text" maxLength="140" placeholder="Add a new comment" ref="text"/>
-
-                        <input type="submit" value="Post"/>
-
-                    </form>
+                <div className='comments'>
+                    <span> <strong> {this.state.username} </strong> </span>
+                    <div className="form-container">
+                        <form className="commentForm" onSubmit={this.handleSubmit.bind(this)}>
+                            <textarea type="text" maxLength="140" placeholder="Add a new comment" ref="text" value ={this.props.value} onChange={this.update}/>
+                            <input type="submit" value="Post"/>
+                        </form>
+                    </div>
                 </div>
             </div>
-        </div>
 
         );
     }

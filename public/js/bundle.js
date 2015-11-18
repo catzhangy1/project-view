@@ -292,16 +292,12 @@ var CommentForm = (function (_React$Component) {
             url: "",
             value: ""
         };
-        console.log(this);
     }
 
     _createClass(CommentForm, [{
         key: 'componentDidMount',
         value: function componentDidMount() {
-            //CommentsStore.listen(this.onChange);
-            //CommentsActions.getComments();
             this.getUserInfo();
-            console.log(this.state);
         }
     }, {
         key: 'getUserInfo',
@@ -335,10 +331,10 @@ var CommentForm = (function (_React$Component) {
             this.refs.text.value = '';
         }
     }, {
-        key: 'handleChange',
-        value: function handleChange(e) {
-            console.log(e);
-            //this.setState({value: e.target.value});
+        key: 'update',
+        value: function update() {
+            var newValue = this.refs.text.value;
+            this.props.updateValue(newValue);
         }
     }, {
         key: 'componentWillUnmount',
@@ -379,7 +375,7 @@ var CommentForm = (function (_React$Component) {
                         _react2['default'].createElement(
                             'form',
                             { className: 'commentForm', onSubmit: this.handleSubmit.bind(this) },
-                            _react2['default'].createElement('textarea', { type: 'text', maxLength: '140', placeholder: 'Add a new comment', ref: 'text' }),
+                            _react2['default'].createElement('textarea', { type: 'text', maxLength: '140', placeholder: 'Add a new comment', ref: 'text', value: this.props.value, onChange: this.update }),
                             _react2['default'].createElement('input', { type: 'submit', value: 'Post' })
                         )
                     )
@@ -417,6 +413,10 @@ var _react2 = _interopRequireDefault(_react);
 
 var _reactRouter = require('react-router');
 
+var _CommentForm = require("./CommentForm");
+
+var _CommentForm2 = _interopRequireDefault(_CommentForm);
+
 var CommentsDetail = (function (_React$Component) {
     _inherits(CommentsDetail, _React$Component);
 
@@ -424,27 +424,22 @@ var CommentsDetail = (function (_React$Component) {
         _classCallCheck(this, CommentsDetail);
 
         _get(Object.getPrototypeOf(CommentsDetail.prototype), 'constructor', this).call(this, props);
-        this.onChange = this.onChange.bind(this);
     }
 
     _createClass(CommentsDetail, [{
-        key: 'componentDidMount',
-        value: function componentDidMount() {}
-    }, {
-        key: 'componentWillUnmount',
-        value: function componentWillUnmount() {}
-    }, {
-        key: 'onChange',
-        value: function onChange(state) {
-            this.setState(state);
+        key: 'addReply',
+        value: function addReply(id, user) {
+            this.props.updateReplyTo(id, user);
         }
     }, {
         key: 'render',
         value: function render() {
-            var comments = this.props.comment.splice(1).map(function (c) {
+            var _this = this;
+            var nestedComments = this.props.comment.slice().splice(1); //makes copy of nestedComments so props.comment is unmodified
+            var comments = nestedComments.map(function (c) {
                 return _react2['default'].createElement(
                     'div',
-                    { className: 'nested-comments-container' },
+                    { className: 'nested-comments-container', key: c.rawDate },
                     _react2['default'].createElement('img', { src: c.icon, width: '60px' }),
                     _react2['default'].createElement(
                         'div',
@@ -470,14 +465,14 @@ var CommentsDetail = (function (_React$Component) {
                             c.content,
                             ' '
                         ),
-                        _react2['default'].createElement('img', { src: 'img/reply.svg', height: '25px', width: '25px' })
+                        _react2['default'].createElement('img', { src: 'img/reply.svg', onClick: _this.addReply.bind(_this, c.id, c.user), height: '25px', width: '25px' })
                     )
                 );
             });
 
             return _react2['default'].createElement(
                 'div',
-                { className: 'comments-container' },
+                { className: 'comments-container', key: this.props.comment[0].rawDate },
                 _react2['default'].createElement('img', { src: this.props.comment[0].icon, width: '60px' }),
                 _react2['default'].createElement(
                     'div',
@@ -503,7 +498,7 @@ var CommentsDetail = (function (_React$Component) {
                         this.props.comment[0].content,
                         ' '
                     ),
-                    _react2['default'].createElement('img', { src: 'img/reply.svg', height: '25px', width: '25px' })
+                    _react2['default'].createElement('img', { src: 'img/reply.svg', onClick: this.addReply.bind(this, this.props.comment[0].id, this.props.comment[0].user), height: '25px', width: '25px' })
                 ),
                 _react2['default'].createElement(
                     'div',
@@ -520,7 +515,7 @@ var CommentsDetail = (function (_React$Component) {
 exports['default'] = CommentsDetail;
 module.exports = exports['default'];
 
-},{"react":"react","react-router":"react-router"}],8:[function(require,module,exports){
+},{"./CommentForm":6,"react":"react","react-router":"react-router"}],8:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -743,11 +738,25 @@ var Comments = (function (_React$Component) {
             this.setState(state);
         }
     }, {
+        key: 'updateValue',
+        value: function updateValue(val) {
+            this.setState({ currentReplyTo: val });
+        }
+    }, {
+        key: 'updateReplyTo',
+        value: function updateReplyTo(val, username) {
+            var user = "@" + username;
+            var oldComments = this.state.comments;
+            this.setState({ currentReplyTo: val, currentReplyToUser: user, comments: oldComments });
+        }
+    }, {
         key: 'render',
         value: function render() {
+            var _this = this;
             var comments = this.state.comments.map(function (comment) {
                 return _react2['default'].createElement(_CommentsDetail2['default'], {
-                    comment: comment });
+                    comment: comment,
+                    updateReplyTo: _this.updateReplyTo.bind(_this) });
             });
 
             return _react2['default'].createElement(
@@ -770,7 +779,11 @@ var Comments = (function (_React$Component) {
                     null,
                     comments
                 ),
-                _react2['default'].createElement(_CommentForm2['default'], { postComments: _actionsCommentsActions2['default'].postComments })
+                _react2['default'].createElement(_CommentForm2['default'], {
+                    postComments: _actionsCommentsActions2['default'].postComments,
+                    updateValue: this.updateValue.bind(this),
+                    value: this.state.currentReplyToUser
+                })
             );
         }
     }]);
@@ -1103,6 +1116,8 @@ var CommentsStore = (function () {
         this.threadStarters = [];
         this.commentsRaw = [];
         this.size = 0;
+        this.currentReplyTo = null;
+        this.currentReplyToUser = '';
     }
 
     _createClass(CommentsStore, [{
@@ -1128,8 +1143,6 @@ var CommentsStore = (function () {
             this.comments = this.threadStarters.map(function (a) {
                 return _this.commentsManager(a, _this.commentsRaw);
             });
-
-            console.log(this.comments);
             this.size = data.length;
         }
     }, {
@@ -1166,7 +1179,7 @@ var CommentsStore = (function () {
             commentblock = commentblock.reduce(function (a, b) {
                 return a.concat(b);
             });
-            console.log(commentblock);
+
             return commentblock;
         }
     }, {
