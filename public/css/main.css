@@ -79,7 +79,10 @@ img{
     margin-top: 10px;
     font-weight: 600;
     color: #2CA1DB;
+    max-height: 28px;
+    min-width: 150px;
 }
+
 .header-title {
     padding-bottom: 15px;
 }

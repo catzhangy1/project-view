@@ -19,35 +19,39 @@ var CommentsActions = (function () {
     function CommentsActions() {
         _classCallCheck(this, CommentsActions);
 
-        this.generateActions('getCommentsSuccess', 'getCommentsFail', 'getUserInfoSuccess', 'getUserInfoFail');
+        this.generateActions('getCommentsSuccess', 'getCommentsFail', 'postCommentsFail');
     }
 
     _createClass(CommentsActions, [{
         key: 'getComments',
         value: function getComments() {
-            var _this = this;
+            var _this2 = this;
 
             //http://api.diy.org/makers/{maker_name}/projects/{project_id}
 
             $.ajax({ url: 'http://api.diy.org/makers/hivetest/projects/566218/comments' }).done(function (data) {
                 console.log(data);
-                _this.actions.getCommentsSuccess(data.response);
+                _this2.actions.getCommentsSuccess(data.response);
             }).fail(function (jqXhr) {
-                _this.actions.getCommentsFail(jqXhr);
+                _this2.actions.getCommentsFail(jqXhr);
             });
         }
     }, {
         key: 'postComments',
         value: function postComments(body) {
+            var _this3 = this;
+
+            var _this = this;
             $.ajax({ url: 'http://api.diy.org/makers/hivetest/projects/566218/comments',
                 headers: { 'x-diy-api-token': '30b28060b2b06a954c334ad2c92a8d85b58316d9' },
                 type: 'POST',
                 processData: false,
                 contentType: 'application/json',
                 data: body }).done(function (data) {
-                console.log(data);
+                toastr.success('DIY', 'Your comment has been posted successfully!');
+                _this.actions.getComments();
             }).fail(function (jqXhr) {
-                console.log(jqXhr);
+                _this3.actions.postCommentsFail(jqXhr);
             });
         }
     }]);
@@ -849,6 +853,15 @@ var Favourites = (function (_React$Component) {
             _storesFavouritesStore2['default'].unlisten(this.onChange);
         }
     }, {
+        key: 'truncate',
+        value: function truncate(a) {
+            if (a.length > 16) {
+                //conservative estimate on longest word allowed
+                return a.slice(0, 12).concat("...");
+            }
+            return a;
+        }
+    }, {
         key: 'onChange',
         value: function onChange(state) {
             this.setState(state);
@@ -856,15 +869,7 @@ var Favourites = (function (_React$Component) {
     }, {
         key: 'render',
         value: function render() {
-            //let leaderboardCharacters = this.state.characters.map((character) => {
-            //    return (
-            //        <li key={character.characterId}>
-            //            <Link to={'/characters/' + character.characterId}>
-            //                <img className='thumb-md' src={'http://image.eveonline.com/Character/' + character.characterId + '_128.jpg'} />
-            //            </Link>
-            //        </li>
-            //    )
-            //});
+            var _this = this;
             var users = this.state.favourites.map(function (user) {
                 return _react2['default'].createElement(
                     'div',
@@ -875,7 +880,7 @@ var Favourites = (function (_React$Component) {
                         'span',
                         null,
                         ' ',
-                        user.username,
+                        _this.truncate(user.username),
                         ' '
                     )
                 );
@@ -1184,6 +1189,12 @@ var CommentsStore = (function () {
             return commentblock;
         }
     }, {
+        key: 'onPostCommentsFail',
+        value: function onPostCommentsFail(jqXhr) {
+            // Handle multiple response formats, fallback to HTTP status code number.
+            toastr.error(jqXhr.responseJSON && jqXhr.responseJSON.message || jqXhr.responseText || jqXhr.statusText);
+        }
+    }, {
         key: 'onGetCommentsFail',
         value: function onGetCommentsFail(jqXhr) {
             // Handle multiple response formats, fallback to HTTP status code number.
@@ -1256,8 +1267,8 @@ var FavouritesStore = (function () {
             return [date[0], " ", date[1], ", ", date[2]].join("");
         }
     }, {
-        key: 'onGetTopCharactersFail',
-        value: function onGetTopCharactersFail(jqXhr) {
+        key: 'onGetFavouritesFail',
+        value: function onGetFavouritesFail(jqXhr) {
             // Handle multiple response formats, fallback to HTTP status code number.
             toastr.error(jqXhr.responseJSON && jqXhr.responseJSON.message || jqXhr.responseText || jqXhr.statusText);
         }
@@ -1303,19 +1314,6 @@ var ProjectViewStore = (function () {
             contentType: "",
             contentSrc: "" };
     }
-
-    //const rawDataToPost = (a) => {
-    //    return {
-    //        title: unescape(a.headline),
-    //        body: unescape(a.copy),
-    //        teaser: extractHtmlText(unescape(a.abstract)),
-    //        published: new Date(a.published * 1000),
-    //        authors: _.map(_.values(a.getAuthor), (author) => unescape(author)),
-    //        images: _.map(_.values(a.media), cleanMedia),
-    //        tags: _.map(_.values(a.tags), cleanTag),
-    //        url: unescape(a.getURL),
-    //    };
-    //};
 
     _createClass(ProjectViewStore, [{
         key: 'onGetProjectSuccess',
