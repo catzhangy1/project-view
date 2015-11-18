@@ -8,7 +8,7 @@ class CommentsStore {
         this.threadStarters = [];
         this.commentsRaw = [];
         this.size = 0;
-        this.currentReplyTo = null;
+        this.currentReplyTo = 0;
         this.currentReplyToUser = '';
 
 

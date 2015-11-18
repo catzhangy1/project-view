@@ -38,16 +38,17 @@ class CommentForm extends React.Component {
 
     handleSubmit(e) {
         e.preventDefault();
+        let result;
         let body = this.refs.text.value.trim();
         if(!body){
             return;
         }
-        let number = 2783718;
-        this.props.postComments({raw: body});
+        result = this.props.replyId == 0 ? {raw:body} : {raw:body, reply:this.props.replyId};
+        this.props.postComments(JSON.stringify(result));
         this.refs.text.value = '';
     }
 
-    update() {
+    updateForm() {
         let newValue = this.refs.text.value;
         this.props.updateValue(newValue);
     }
@@ -67,9 +68,10 @@ class CommentForm extends React.Component {
 
                 <div className='comments'>
                     <span> <strong> {this.state.username} </strong> </span>
+
                     <div className="form-container">
                         <form className="commentForm" onSubmit={this.handleSubmit.bind(this)}>
-                            <textarea type="text" maxLength="140" placeholder="Add a new comment" ref="text" value ={this.props.value} onChange={this.update}/>
+                            <textarea type="text" maxLength="140" placeholder="Add a new comment" ref="text" value ={this.props.value} onChange={this.updateForm}/>
                             <input type="submit" value="Post"/>
                         </form>
                     </div>
@@ -77,7 +79,7 @@ class CommentForm extends React.Component {
             </div>
 
         );
-    }
+        }
 }
 
 export default CommentForm;

@@ -25,11 +25,11 @@ class CommentsActions {
 
 
     postComments(body) {
-        console.log(body);
         $.ajax({ url: 'http://api.diy.org/makers/hivetest/projects/566218/comments',
             headers: {'x-diy-api-token': '30b28060b2b06a954c334ad2c92a8d85b58316d9'},
             type: 'POST',
             processData: false,
+            contentType: 'application/json',
             data: body })
             .done((data) => {
                 console.log(data);

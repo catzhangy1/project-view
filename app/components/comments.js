@@ -25,14 +25,13 @@ class Comments extends React.Component {
         this.setState(state);
     }
 
-    updateValue(val) {
+    updateForm(val) {
         this.setState({currentReplyTo: val});
     }
 
     updateReplyTo(val, username){
         let user = "@" + username;
-        let oldComments = this.state.comments;
-        this.setState({currentReplyTo: val, currentReplyToUser: user, comments: oldComments});
+        this.setState({currentReplyTo: val, currentReplyToUser: user});
     }
 
     render() {
@@ -56,8 +55,9 @@ class Comments extends React.Component {
                 </div>
                 <CommentForm
                     postComments={CommentsActions.postComments}
-                    updateValue={this.updateValue.bind(this)}
+                    updateValue={this.updateForm.bind(this)}
                     value={this.state.currentReplyToUser}
+                    replyId={this.state.currentReplyTo}
                 />
             </div>
         );

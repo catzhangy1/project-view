@@ -80,13 +80,15 @@ img{
     font-weight: 600;
     color: #2CA1DB;
 }
+.header-title {
+    padding-bottom: 15px;
+}
 .header-title span{
     color: #414C52;
     font-weight: 600;
     font-size: 24px;
     line-height: 40px;
     vertical-align: -2px;
-    padding-bottom: 15px;
 }
 
 .comments-container {

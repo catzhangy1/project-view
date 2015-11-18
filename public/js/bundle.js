@@ -39,11 +39,11 @@ var CommentsActions = (function () {
     }, {
         key: 'postComments',
         value: function postComments(body) {
-            console.log(body);
             $.ajax({ url: 'http://api.diy.org/makers/hivetest/projects/566218/comments',
                 headers: { 'x-diy-api-token': '30b28060b2b06a954c334ad2c92a8d85b58316d9' },
                 type: 'POST',
                 processData: false,
+                contentType: 'application/json',
                 data: body }).done(function (data) {
                 console.log(data);
             }).fail(function (jqXhr) {
@@ -322,17 +322,18 @@ var CommentForm = (function (_React$Component) {
         key: 'handleSubmit',
         value: function handleSubmit(e) {
             e.preventDefault();
+            var result = undefined;
             var body = this.refs.text.value.trim();
             if (!body) {
                 return;
             }
-            var number = 2783718;
-            this.props.postComments({ raw: body });
+            result = this.props.replyId == 0 ? { raw: body } : { raw: body, reply: this.props.replyId };
+            this.props.postComments(JSON.stringify(result));
             this.refs.text.value = '';
         }
     }, {
-        key: 'update',
-        value: function update() {
+        key: 'updateForm',
+        value: function updateForm() {
             var newValue = this.refs.text.value;
             this.props.updateValue(newValue);
         }
@@ -375,7 +376,7 @@ var CommentForm = (function (_React$Component) {
                         _react2['default'].createElement(
                             'form',
                             { className: 'commentForm', onSubmit: this.handleSubmit.bind(this) },
-                            _react2['default'].createElement('textarea', { type: 'text', maxLength: '140', placeholder: 'Add a new comment', ref: 'text', value: this.props.value, onChange: this.update }),
+                            _react2['default'].createElement('textarea', { type: 'text', maxLength: '140', placeholder: 'Add a new comment', ref: 'text', value: this.props.value, onChange: this.updateForm }),
                             _react2['default'].createElement('input', { type: 'submit', value: 'Post' })
                         )
                     )
@@ -738,16 +739,15 @@ var Comments = (function (_React$Component) {
             this.setState(state);
         }
     }, {
-        key: 'updateValue',
-        value: function updateValue(val) {
+        key: 'updateForm',
+        value: function updateForm(val) {
             this.setState({ currentReplyTo: val });
         }
     }, {
         key: 'updateReplyTo',
         value: function updateReplyTo(val, username) {
             var user = "@" + username;
-            var oldComments = this.state.comments;
-            this.setState({ currentReplyTo: val, currentReplyToUser: user, comments: oldComments });
+            this.setState({ currentReplyTo: val, currentReplyToUser: user });
         }
     }, {
         key: 'render',
@@ -781,8 +781,9 @@ var Comments = (function (_React$Component) {
                 ),
                 _react2['default'].createElement(_CommentForm2['default'], {
                     postComments: _actionsCommentsActions2['default'].postComments,
-                    updateValue: this.updateValue.bind(this),
-                    value: this.state.currentReplyToUser
+                    updateValue: this.updateForm.bind(this),
+                    value: this.state.currentReplyToUser,
+                    replyId: this.state.currentReplyTo
                 })
             );
         }
@@ -1116,7 +1117,7 @@ var CommentsStore = (function () {
         this.threadStarters = [];
         this.commentsRaw = [];
         this.size = 0;
-        this.currentReplyTo = null;
+        this.currentReplyTo = 0;
         this.currentReplyToUser = '';
     }
 
