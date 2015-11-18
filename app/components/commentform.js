@@ -44,7 +44,7 @@ class CommentForm extends React.Component {
             return;
         }
         result = this.props.replyId == 0 ? {raw:body} : {raw:body, reply:this.props.replyId};
-        this.props.postComments(JSON.stringify(result));
+        this.props.postComments(this.props.userId, this.props.projectId, JSON.stringify(result));
         this.refs.text.value = '';
     }
 

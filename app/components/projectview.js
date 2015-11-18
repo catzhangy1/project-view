@@ -12,7 +12,7 @@ class ProjectView extends React.Component {
 
     componentDidMount() {
         ProjectViewStore.listen(this.onChange);
-        ProjectViewAction.getProject();
+        ProjectViewAction.getProject(this.props.userId, this.props.projectId);
     }
 
     componentWillUnmount() {

@@ -9,10 +9,13 @@ class CommentsActions {
         );
     }
 
-    getComments() {
-        //http://api.diy.org/makers/{maker_name}/projects/{project_id}
-
-        $.ajax({ url: 'http://api.diy.org/makers/hivetest/projects/566218/comments' })
+    getComments(userId, projectId) {
+        if(!userId || !projectId) {
+            return;
+        }
+        console.log(userId);
+        console.log(projectId);
+        $.ajax({ url: `http://api.diy.org/makers/${userId}/projects/${projectId}/comments` })
             .done((data) => {
                 console.log(data);
                 this.actions.getCommentsSuccess(data.response)
@@ -23,9 +26,12 @@ class CommentsActions {
     }
 
 
-    postComments(body) {
+    postComments(userId, projectId, body) {
+        if(!userId || !projectId) {
+            return;
+        }
         const _this = this;
-        $.ajax({ url: 'http://api.diy.org/makers/hivetest/projects/566218/comments',
+        $.ajax({ url: `http://api.diy.org/makers/${userId}/projects/${projectId}/comments`,
                 headers: {'x-diy-api-token': '30b28060b2b06a954c334ad2c92a8d85b58316d9'},
                 type: 'POST',
                 processData: false,

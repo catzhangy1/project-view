@@ -8,10 +8,11 @@ class FavouritesActions {
         );
     }
 
-    getFavourites() {
-        //http://api.diy.org/makers/{maker_name}/projects/{project_id}
-
-        $.ajax({ url: 'https://api.diy.org/makers/neptune/projects/814610/favorites' })
+    getFavourites(userId, projectId) {
+        if(!userId || !projectId) {
+            return;
+        }
+        $.ajax({ url: `http://api.diy.org/makers/${userId}/projects/${projectId}/favorites` })
             .done((data) => {
                 console.log(data);
                 this.actions.getFavouritesSuccess(data.response)

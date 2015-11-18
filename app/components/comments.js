@@ -14,7 +14,7 @@ class Comments extends React.Component {
 
     componentDidMount() {
         CommentsStore.listen(this.onChange);
-        CommentsActions.getComments();
+        CommentsActions.getComments(this.props.userId, this.props.projectId);
     }
 
     componentWillUnmount() {
@@ -58,6 +58,8 @@ class Comments extends React.Component {
                     updateValue={this.updateForm.bind(this)}
                     value={this.state.currentReplyToUser}
                     replyId={this.state.currentReplyTo}
+                    userId={this.props.userId}
+                    projectId={this.props.projectId}
                 />
             </div>
         );

@@ -8,10 +8,11 @@ class ProjectViewAction {
         );
     }
 
-    getProject() {
-        //http://api.diy.org/makers/{maker_name}/projects/{project_id}
-
-        $.ajax({ url: 'https://api.diy.org/makers/hivetest/projects/566218/' })
+    getProject(userId, projectId) {
+        if(!userId || !projectId) {
+            return;
+        }
+        $.ajax({ url: `http://api.diy.org/makers/${userId}/projects/${projectId}/` })
             .done((data) => {
                 console.log(data);
                 this.actions.getProjectSuccess(data.response)

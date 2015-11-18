@@ -9,17 +9,17 @@ class App extends React.Component {
             <div className='outer-container'>
                 <div className = 'upper-section'>
                     <div className ='inner-container'>
-                        <ProjectView />
+                        <ProjectView userId={this.props.params.user} projectId={this.props.params.project}/>
                     </div>
                 </div>
 
                 <div className = 'inner-container'>
                     <div className='row'>
                         <div className ='col-sm-8'>
-                            <Comments />
+                            <Comments userId={this.props.params.user} projectId={this.props.params.project}/>
                         </div>
                         <div className='col-md-4 col-sm-4'>
-                            <Favourites />
+                            <Favourites userId={this.props.params.user} projectId={this.props.params.project}/>
                         </div>
                     </div>
                 </div>

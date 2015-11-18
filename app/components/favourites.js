@@ -12,7 +12,7 @@ class Favourites extends React.Component {
 
     componentDidMount() {
         FavouritesStore.listen(this.onChange);
-        FavouritesActions.getFavourites();
+        FavouritesActions.getFavourites(this.props.userId, this.props.projectId);
     }
 
     componentWillUnmount() {
