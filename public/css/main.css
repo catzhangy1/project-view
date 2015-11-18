@@ -16,7 +16,6 @@ html {
     height: 100%;
 }
 body {
-    margin-bottom: 220px;
     -webkit-font-smoothing: antialiased;
     font-family: "ApexRounded";
     color: #414c52;
@@ -24,7 +23,7 @@ body {
     background-color: #F7F7F7;
 }
 .outer-container {
-
+    padding-bottom: 100px;
     -webkit-flex: 1; /* Safari 6.1+ */
     -ms-flex: 1; /* IE 10 */
     flex: 1;
@@ -63,6 +62,7 @@ body {
 .project-container footer {
     color: #1489C4;
 }
+
 img{
     max-width: 100%;
     border-radius: 5px;
@@ -116,11 +116,31 @@ img{
     right: 15px;
     bottom: 10px;
 }
-.comments >img:focus,
+
 .comments >img:hover{
     background-color: #2CA1DB;
 }
 
+.comments input[type="submit"] {
+    color: #F7F7F7;
+    outline: none;
+    background-color: #2CA1DB;
+    padding: 3px 15px 3px 15px;
+    font-weight: 600;
+    border: 5px solid #1489C4;
+    border-radius: 5px;
+    position: absolute;
+    right: 15px;
+    bottom: 10px;
+}
+
+.comments input[type="submit"]:focus,
+.comments input[type="submit"]:hover{
+    background-color:#1489C4;
+}
+.form-container{
+    min-height: 100px;
+}
 textarea {
     border: none;
     box-shaddow: none;
@@ -133,6 +153,7 @@ textarea {
     -webkit-appearance: none;
     resize: none;
     overflow: hidden;
+    min-height: 100px;
     width:100%;
 }
 textarea:focus {

@@ -72,11 +72,14 @@ class CommentForm extends React.Component {
             <img src= {this.state.icon} width='60px' />
             <div className = 'comments'>
                 <span> <strong> {this.state.username} </strong> </span>
-                <form className="commentForm" onSubmit={this.handleSubmit.bind(this)}>
-                    <textarea type="text" maxLength="140" placeholder="Add a new comment" ref="text"/>
-                    <br/>
-                    <input type="submit" value="Post"/>
-                </form>
+                <div className ="form-container">
+                    <form className="commentForm" onSubmit={this.handleSubmit.bind(this)}>
+                        <textarea type="text" maxLength="140" placeholder="Add a new comment" ref="text"/>
+
+                        <input type="submit" value="Post"/>
+
+                    </form>
+                </div>
             </div>
         </div>
 

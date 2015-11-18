@@ -374,11 +374,14 @@ var CommentForm = (function (_React$Component) {
                         ' '
                     ),
                     _react2['default'].createElement(
-                        'form',
-                        { className: 'commentForm', onSubmit: this.handleSubmit.bind(this) },
-                        _react2['default'].createElement('textarea', { type: 'text', maxLength: '140', placeholder: 'Add a new comment', ref: 'text' }),
-                        _react2['default'].createElement('br', null),
-                        _react2['default'].createElement('input', { type: 'submit', value: 'Post' })
+                        'div',
+                        { className: 'form-container' },
+                        _react2['default'].createElement(
+                            'form',
+                            { className: 'commentForm', onSubmit: this.handleSubmit.bind(this) },
+                            _react2['default'].createElement('textarea', { type: 'text', maxLength: '140', placeholder: 'Add a new comment', ref: 'text' }),
+                            _react2['default'].createElement('input', { type: 'submit', value: 'Post' })
+                        )
                     )
                 )
             );
