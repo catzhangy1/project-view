@@ -26,7 +26,7 @@ class CommentForm extends React.Component {
                 this.setState({
                     username: data.nickname,
                     url: data.url,
-                    icon: data.avatar.small.url,
+                    icon: data.avatar.small.url
                 });
             })
             .fail((jqXhr) => {

@@ -47,7 +47,7 @@ class Comments extends React.Component {
         return (
             <div>
                 <div className='header-title'>
-                    <img src= "img/comment.svg" height='25px' width='25px'/>
+                    <img src= "/img/comment.svg" height='25px' width='25px'/>
                     <span> {this.state.size} Comments</span>
                 </div>
                 <div>

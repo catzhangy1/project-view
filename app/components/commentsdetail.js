@@ -20,7 +20,7 @@ class CommentsDetail extends React.Component {
                 <div className = 'comments'>
                     <span> <strong> {c.user} </strong> {c.date}</span>
                     <p> {c.content} </p>
-                    <img src= "img/reply.svg" onClick={_this.addReply.bind(_this, c.id, c.user)} height='25px' width='25px'/>
+                    <img src= "/img/reply.svg" onClick={_this.addReply.bind(_this, c.id, c.user)} height='25px' width='25px'/>
                 </div>
             </div>)
         });
@@ -31,7 +31,7 @@ class CommentsDetail extends React.Component {
                 <div className = 'comments'>
                     <span> <strong> {this.props.comment[0].user} </strong> {this.props.comment[0].date}</span>
                     <p> {this.props.comment[0].content} </p>
-                    <img src= "img/reply.svg" onClick={this.addReply.bind(this, this.props.comment[0].id, this.props.comment[0].user)} height='25px' width='25px'/>
+                    <img src= "/img/reply.svg" onClick={this.addReply.bind(this, this.props.comment[0].id, this.props.comment[0].user)} height='25px' width='25px'/>
                 </div>
                 <div>
                     {comments}

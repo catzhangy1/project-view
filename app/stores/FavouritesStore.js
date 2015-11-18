@@ -24,7 +24,7 @@ class FavouritesStore {
         return [date[0], " ", date[1], ", ", date[2]].join("");
     }
 
-    onGetTopCharactersFail(jqXhr) {
+    onGetFavouritesFail(jqXhr) {
         // Handle multiple response formats, fallback to HTTP status code number.
         toastr.error(jqXhr.responseJSON && jqXhr.responseJSON.message || jqXhr.responseText || jqXhr.statusText);
     }

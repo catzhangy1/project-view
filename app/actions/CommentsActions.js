@@ -5,8 +5,7 @@ class CommentsActions {
         this.generateActions(
             'getCommentsSuccess',
             'getCommentsFail',
-            'getUserInfoSuccess',
-            'getUserInfoFail'
+            'postCommentsFail'
         );
     }
 
@@ -33,6 +32,7 @@ class CommentsActions {
                 contentType: 'application/json',
                 data: body })
             .done((data) => {
+                toastr.success('DIY', 'Your comment has been posted successfully!');
                 _this.actions.getComments();
             })
             .fail((jqXhr) => {

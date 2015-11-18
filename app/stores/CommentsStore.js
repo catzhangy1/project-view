@@ -71,6 +71,11 @@ class CommentsStore {
 
     }
 
+    onPostCommentsFail(jqXhr) {
+        // Handle multiple response formats, fallback to HTTP status code number.
+        toastr.error(jqXhr.responseJSON && jqXhr.responseJSON.message || jqXhr.responseText || jqXhr.statusText);
+    }
+
 
     onGetCommentsFail(jqXhr) {
         // Handle multiple response formats, fallback to HTTP status code number.

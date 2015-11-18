@@ -1,13 +1,13 @@
 import React from 'react';
 
-class Home extends React.Component {
+class Whoops extends React.Component {
     render() {
         return (
             <div className='alert alert-info'>
-                Hello from Home Component!!!!!!!!
+                Nope
             </div>
         );
     }
 }
 
-export default Home;
+export default Whoops;

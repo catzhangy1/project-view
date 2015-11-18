@@ -19,23 +19,23 @@ class Favourites extends React.Component {
         FavouritesStore.unlisten(this.onChange);
     }
 
+    truncate(a) {
+        if(a.length > 16){ //conservative estimate on longest word allowed
+            return a.slice(0,12).concat("...");
+        }
+        return a;
+    }
+
     onChange(state) {
         this.setState(state);
     }
 
+
     render() {
-        //let leaderboardCharacters = this.state.characters.map((character) => {
-        //    return (
-        //        <li key={character.characterId}>
-        //            <Link to={'/characters/' + character.characterId}>
-        //                <img className='thumb-md' src={'http://image.eveonline.com/Character/' + character.characterId + '_128.jpg'} />
-        //            </Link>
-        //        </li>
-        //    )
-        //});
+        let _this = this;
         let users = this.state.favourites.map(function (user) {
             return <div className = 'user'>
-                    <img src= {user.icon}/> <span> {user.username} </span>
+                    <img src= {user.icon}/> <span> {_this.truncate(user.username)} </span>
                 </div>
 
         });
@@ -43,7 +43,7 @@ class Favourites extends React.Component {
         return (
             <div>
                 <div className='header-title'>
-                    <img src= "img/favorite.svg" width='24px' height='24px'/>
+                    <img src= "/img/favorite.svg" width='24px' height='24px'/>
                     <span> {this.state.size} Favourites</span>
                 </div>
                 <div className='bi-section'>
