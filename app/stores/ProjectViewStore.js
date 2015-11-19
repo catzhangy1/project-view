@@ -13,6 +13,7 @@ class ProjectViewStore {
             contentType:"",
             contentSrc:""};
         this.loadSuccess = false;
+        this.modalIsOpen = false;
     }
 
     onGetProjectSuccess(data) {
@@ -22,13 +23,21 @@ class ProjectViewStore {
             title: data.title,
             date: this.getDate(data.stamp),
             contentType: data.clips[0].type,
-            contentSrc: data.clips[0].assets.web_480.url
+            contentSrc: this.getContent(data, data.clips[0].type)
         }
         this.loadSuccess = true;
     }
 
     onGetProjectFail(q) {
         this.loadSuccess = false;
+    }
+
+    getContent(data, type){
+        if(type == 'video'){
+            return [data.clips[0].assets.web_480.url, data.clips[0].assets.video_mp4.url];
+        } else{
+            return data.clips[0].assets.web_480.url; //all assets should have web_480 preview
+        }
     }
 
     getDate(data) {

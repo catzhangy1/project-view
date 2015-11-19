@@ -22,6 +22,17 @@ img{
     max-width: 100%;
     border-radius: 5px;
 }
+#video{
+    position: absolute;
+    top: 0;
+    left:0;
+    overflow: hidden;
+    z-index: -1; /* for accessing the video by click */
+}
+#navbar {
+    height: 80px;
+    background-color: #414c52;
+}
 .outer-container {
     padding-bottom: 100px;
     -webkit-flex: 1; /* Safari 6.1+ */
@@ -59,12 +70,11 @@ img{
 .project-container .img {
     overflow: hidden;
     position: relative;
-
 }
 .project-container #favourite {
     position: absolute;
     bottom: 10px;
-    right: 10px;
+    right: 18px;
     width: initial;
 }
 .project-container img {
@@ -72,6 +82,15 @@ img{
 }
 .project-container #favourite:hover {
     background-color:#FF8063;
+}
+.project-container .video {
+    position:relative;
+}
+.project-container #play-btn{
+    position:absolute;
+    width: initial;
+    left: 45%;
+    top: 40%;
 }
 .project-container footer {
     color: #1489C4;

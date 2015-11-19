@@ -19,6 +19,7 @@ var dependencies = [
     'alt',
     'react',
     'react-dom',
+    'react-modal',
     'react-router',
     'underscore'
 ];

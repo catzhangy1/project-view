@@ -53,7 +53,7 @@ var CommentsActions = (function () {
                 contentType: 'application/json',
                 data: body }).done(function (data) {
                 toastr.success('DIY', 'Your comment has been posted successfully!');
-                _this.actions.getComments();
+                _this.actions.getComments(userId, projectId);
             }).fail(function (jqXhr) {
                 _this3.actions.postCommentsFail(jqXhr);
             });
@@ -516,6 +516,10 @@ var _react2 = _interopRequireDefault(_react);
 
 var _reactRouter = require('react-router');
 
+var _reactModal = require('react-modal');
+
+var _reactModal2 = _interopRequireDefault(_reactModal);
+
 var _storesProjectViewStore = require('../stores/ProjectViewStore');
 
 var _storesProjectViewStore2 = _interopRequireDefault(_storesProjectViewStore);
@@ -560,15 +564,48 @@ var ProjectView = (function (_React$Component) {
             this.setState(state);
         }
     }, {
+        key: 'openModal',
+        value: function openModal() {
+            this.setState({ modalIsOpen: true });
+        }
+    }, {
+        key: 'closeModal',
+        value: function closeModal() {
+            this.setState({ modalIsOpen: false });
+        }
+    }, {
         key: 'render',
         value: function render() {
             var comments = _react2['default'].createElement('br', null);
             var favourites = _react2['default'].createElement('br', null);
+            var content = _react2['default'].createElement('br', null);
+            var modal = _react2['default'].createElement('br', null);
             if (this.state.loadSuccess) {
                 comments = _react2['default'].createElement(_comments2['default'], { userId: this.props.params.user, projectId: this.props.params.project });
                 favourites = _react2['default'].createElement(_favourites2['default'], { userId: this.props.params.user, projectId: this.props.params.project });
             }
-
+            if (this.state.project.contentType == 'video') {
+                modal = _react2['default'].createElement(
+                    _reactModal2['default'],
+                    {
+                        isOpen: this.state.modalIsOpen,
+                        onRequestClose: this.closeModal.bind(this) },
+                    _react2['default'].createElement(
+                        'video',
+                        { width: 'auto', controls: true },
+                        _react2['default'].createElement('source', { src: this.state.project.contentSrc[1] }),
+                        'Your browser does not support this video.'
+                    )
+                );
+                content = _react2['default'].createElement(
+                    'div',
+                    { className: 'video' },
+                    _react2['default'].createElement('img', { src: this.state.project.contentSrc[0], width: 'auto' }),
+                    _react2['default'].createElement('img', { src: '/img/play-btn.png', id: 'play-btn', width: '75px', height: '75px', onClick: this.openModal.bind(this) })
+                );
+            } else {
+                content = _react2['default'].createElement('img', { src: this.state.project.contentSrc, width: 'auto' });
+            }
             return _react2['default'].createElement(
                 'div',
                 { className: 'outer-container' },
@@ -587,7 +624,8 @@ var ProjectView = (function (_React$Component) {
                                 _react2['default'].createElement(
                                     'div',
                                     { className: 'col-md-8' },
-                                    _react2['default'].createElement('img', { src: this.state.project.contentSrc, width: 'auto' }),
+                                    content,
+                                    modal,
                                     _react2['default'].createElement('img', { id: 'favourite', src: '/img/favorite.svg', width: '50px', height: '50px' })
                                 ),
                                 _react2['default'].createElement(
@@ -648,7 +686,7 @@ var ProjectView = (function (_React$Component) {
 exports['default'] = ProjectView;
 module.exports = exports['default'];
 
-},{"../actions/ProjectViewAction":3,"../stores/ProjectViewStore":16,"./comments":10,"./favourites":11,"react":"react","react-router":"react-router"}],9:[function(require,module,exports){
+},{"../actions/ProjectViewAction":3,"../stores/ProjectViewStore":16,"./comments":10,"./favourites":11,"react":"react","react-modal":"react-modal","react-router":"react-router"}],9:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -1275,6 +1313,7 @@ var ProjectViewStore = (function () {
             contentType: "",
             contentSrc: "" };
         this.loadSuccess = false;
+        this.modalIsOpen = false;
     }
 
     _createClass(ProjectViewStore, [{
@@ -1286,7 +1325,7 @@ var ProjectViewStore = (function () {
                 title: data.title,
                 date: this.getDate(data.stamp),
                 contentType: data.clips[0].type,
-                contentSrc: data.clips[0].assets.web_480.url
+                contentSrc: this.getContent(data, data.clips[0].type)
             };
             this.loadSuccess = true;
         }
@@ -1294,6 +1333,15 @@ var ProjectViewStore = (function () {
         key: 'onGetProjectFail',
         value: function onGetProjectFail(q) {
             this.loadSuccess = false;
+        }
+    }, {
+        key: 'getContent',
+        value: function getContent(data, type) {
+            if (type == 'video') {
+                return [data.clips[0].assets.web_480.url, data.clips[0].assets.video_mp4.url];
+            } else {
+                return data.clips[0].assets.web_480.url; //all assets should have web_480 preview
+            }
         }
     }, {
         key: 'getDate',
@@ -1463,6 +1511,7 @@ function loopAsync(turns, work, callback) {
   next();
 }
 },{}],20:[function(require,module,exports){
+(function (process){
 /*eslint-disable no-empty */
 'use strict';
 
@@ -1478,6 +1527,7 @@ var _warning2 = _interopRequireDefault(_warning);
 
 var KeyPrefix = '@@History/';
 var QuotaExceededError = 'QuotaExceededError';
+var SecurityError = 'SecurityError';
 
 function createKey(key) {
   return KeyPrefix + key;
@@ -1487,9 +1537,17 @@ function saveState(key, state) {
   try {
     window.sessionStorage.setItem(createKey(key), JSON.stringify(state));
   } catch (error) {
-    if (error.name === QuotaExceededError || window.sessionStorage.length === 0) {
-      // Probably in Safari "private mode" where sessionStorage quota is 0. #42
-      _warning2['default'](false, '[history] Unable to save state; sessionStorage is not available in Safari private mode');
+    if (error.name === SecurityError) {
+      // Blocking cookies in Chrome/Firefox/Safari throws SecurityError on any
+      // attempt to access window.sessionStorage.
+      process.env.NODE_ENV !== 'production' ? _warning2['default'](false, '[history] Unable to save state; sessionStorage is not available due to security settings') : undefined;
+
+      return;
+    }
+
+    if (error.name === QuotaExceededError && window.sessionStorage.length === 0) {
+      // Safari "private mode" throws QuotaExceededError.
+      process.env.NODE_ENV !== 'production' ? _warning2['default'](false, '[history] Unable to save state; sessionStorage is not available in Safari private mode') : undefined;
 
       return;
     }
@@ -1499,7 +1557,18 @@ function saveState(key, state) {
 }
 
 function readState(key) {
-  var json = window.sessionStorage.getItem(createKey(key));
+  var json = undefined;
+  try {
+    json = window.sessionStorage.getItem(createKey(key));
+  } catch (error) {
+    if (error.name === SecurityError) {
+      // Blocking cookies in Chrome/Firefox/Safari throws SecurityError on any
+      // attempt to access window.sessionStorage.
+      process.env.NODE_ENV !== 'production' ? _warning2['default'](false, '[history] Unable to read state; sessionStorage is not available due to security settings') : undefined;
+
+      return null;
+    }
+  }
 
   if (json) {
     try {
@@ -1511,7 +1580,8 @@ function readState(key) {
 
   return null;
 }
-},{"warning":34}],21:[function(require,module,exports){
+}).call(this,require('_process'))
+},{"_process":17,"warning":35}],21:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -1594,6 +1664,7 @@ exports.__esModule = true;
 var canUseDOM = !!(typeof window !== 'undefined' && window.document && window.document.createElement);
 exports.canUseDOM = canUseDOM;
 },{}],23:[function(require,module,exports){
+(function (process){
 'use strict';
 
 exports.__esModule = true;
@@ -1630,7 +1701,7 @@ var _createDOMHistory2 = _interopRequireDefault(_createDOMHistory);
 function createBrowserHistory() {
   var options = arguments.length <= 0 || arguments[0] === undefined ? {} : arguments[0];
 
-  _invariant2['default'](_ExecutionEnvironment.canUseDOM, 'Browser history needs a DOM');
+  !_ExecutionEnvironment.canUseDOM ? process.env.NODE_ENV !== 'production' ? _invariant2['default'](false, 'Browser history needs a DOM') : _invariant2['default'](false) : undefined;
 
   var forceRefresh = options.forceRefresh;
 
@@ -1766,7 +1837,9 @@ function createBrowserHistory() {
 
 exports['default'] = createBrowserHistory;
 module.exports = exports['default'];
-},{"./Actions":18,"./DOMStateStorage":20,"./DOMUtils":21,"./ExecutionEnvironment":22,"./createDOMHistory":24,"invariant":33}],24:[function(require,module,exports){
+}).call(this,require('_process'))
+},{"./Actions":18,"./DOMStateStorage":20,"./DOMUtils":21,"./ExecutionEnvironment":22,"./createDOMHistory":24,"_process":17,"invariant":34}],24:[function(require,module,exports){
+(function (process){
 'use strict';
 
 exports.__esModule = true;
@@ -1795,7 +1868,7 @@ function createDOMHistory(options) {
   }));
 
   function listen(listener) {
-    _invariant2['default'](_ExecutionEnvironment.canUseDOM, 'DOM history needs a DOM');
+    !_ExecutionEnvironment.canUseDOM ? process.env.NODE_ENV !== 'production' ? _invariant2['default'](false, 'DOM history needs a DOM') : _invariant2['default'](false) : undefined;
 
     return history.listen(listener);
   }
@@ -1807,7 +1880,8 @@ function createDOMHistory(options) {
 
 exports['default'] = createDOMHistory;
 module.exports = exports['default'];
-},{"./DOMUtils":21,"./ExecutionEnvironment":22,"./createHistory":25,"invariant":33}],25:[function(require,module,exports){
+}).call(this,require('_process'))
+},{"./DOMUtils":21,"./ExecutionEnvironment":22,"./createHistory":25,"_process":17,"invariant":34}],25:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -1950,6 +2024,19 @@ function createHistory() {
       if (pendingLocation !== nextLocation) return; // Transition was interrupted.
 
       if (ok) {
+        // treat PUSH to current path like REPLACE to be consistent with browsers
+        if (nextLocation.action === _Actions.PUSH) {
+          var _getCurrentLocation = getCurrentLocation();
+
+          var pathname = _getCurrentLocation.pathname;
+          var search = _getCurrentLocation.search;
+
+          var currentPath = pathname + search;
+          var path = nextLocation.pathname + nextLocation.search;
+
+          if (currentPath === path) nextLocation.action = _Actions.REPLACE;
+        }
+
         if (finishTransition(nextLocation) !== false) updateLocation(nextLocation);
       } else if (location && nextLocation.action === _Actions.POP) {
         var prevIndex = allKeys.indexOf(location.key);
@@ -1964,8 +2051,16 @@ function createHistory() {
     transitionTo(createLocation(path, state, _Actions.PUSH, createKey()));
   }
 
+  function push(path) {
+    pushState(null, path);
+  }
+
   function replaceState(state, path) {
     transitionTo(createLocation(path, state, _Actions.REPLACE, createKey()));
+  }
+
+  function replace(path) {
+    replaceState(null, path);
   }
 
   function goBack() {
@@ -2039,6 +2134,8 @@ function createHistory() {
     transitionTo: transitionTo,
     pushState: pushState,
     replaceState: replaceState,
+    push: push,
+    replace: replace,
     go: go,
     goBack: goBack,
     goForward: goForward,
@@ -2055,7 +2152,7 @@ function createHistory() {
 
 exports['default'] = createHistory;
 module.exports = exports['default'];
-},{"./Actions":18,"./AsyncUtils":19,"./createLocation":26,"./deprecate":27,"./runTransitionHook":29,"deep-equal":30}],26:[function(require,module,exports){
+},{"./Actions":18,"./AsyncUtils":19,"./createLocation":26,"./deprecate":27,"./runTransitionHook":30,"deep-equal":31}],26:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -2092,7 +2189,8 @@ function createLocation() {
 
 exports['default'] = createLocation;
 module.exports = exports['default'];
-},{"./Actions":18,"./parsePath":28}],27:[function(require,module,exports){
+},{"./Actions":18,"./parsePath":29}],27:[function(require,module,exports){
+(function (process){
 'use strict';
 
 exports.__esModule = true;
@@ -2105,14 +2203,30 @@ var _warning2 = _interopRequireDefault(_warning);
 
 function deprecate(fn, message) {
   return function () {
-    _warning2['default'](false, '[history] ' + message);
+    process.env.NODE_ENV !== 'production' ? _warning2['default'](false, '[history] ' + message) : undefined;
     return fn.apply(this, arguments);
   };
 }
 
 exports['default'] = deprecate;
 module.exports = exports['default'];
-},{"warning":34}],28:[function(require,module,exports){
+}).call(this,require('_process'))
+},{"_process":17,"warning":35}],28:[function(require,module,exports){
+"use strict";
+
+exports.__esModule = true;
+function extractPath(string) {
+  var match = string.match(/^https?:\/\/[^\/]*/);
+
+  if (match == null) return string;
+
+  return string.substring(match[0].length);
+}
+
+exports["default"] = extractPath;
+module.exports = exports["default"];
+},{}],29:[function(require,module,exports){
+(function (process){
 'use strict';
 
 exports.__esModule = true;
@@ -2123,20 +2237,16 @@ var _warning = require('warning');
 
 var _warning2 = _interopRequireDefault(_warning);
 
-function extractPath(string) {
-  var match = string.match(/^https?:\/\/[^\/]*/);
+var _extractPath = require('./extractPath');
 
-  if (match == null) return string;
-
-  _warning2['default'](false, 'A path must be pathname + search + hash only, not a fully qualified URL like "%s"', string);
-
-  return string.substring(match[0].length);
-}
+var _extractPath2 = _interopRequireDefault(_extractPath);
 
 function parsePath(path) {
-  var pathname = extractPath(path);
+  var pathname = _extractPath2['default'](path);
   var search = '';
   var hash = '';
+
+  process.env.NODE_ENV !== 'production' ? _warning2['default'](path === pathname, 'A path must be pathname + search + hash only, not a fully qualified URL like "%s"', path) : undefined;
 
   var hashIndex = pathname.indexOf('#');
   if (hashIndex !== -1) {
@@ -2161,7 +2271,9 @@ function parsePath(path) {
 
 exports['default'] = parsePath;
 module.exports = exports['default'];
-},{"warning":34}],29:[function(require,module,exports){
+}).call(this,require('_process'))
+},{"./extractPath":28,"_process":17,"warning":35}],30:[function(require,module,exports){
+(function (process){
 'use strict';
 
 exports.__esModule = true;
@@ -2180,13 +2292,14 @@ function runTransitionHook(hook, location, callback) {
     // call the callback with the return value.
     callback(result);
   } else {
-    _warning2['default'](result === undefined, 'You should not "return" in a transition hook with a callback argument; call the callback instead');
+    process.env.NODE_ENV !== 'production' ? _warning2['default'](result === undefined, 'You should not "return" in a transition hook with a callback argument; call the callback instead') : undefined;
   }
 }
 
 exports['default'] = runTransitionHook;
 module.exports = exports['default'];
-},{"warning":34}],30:[function(require,module,exports){
+}).call(this,require('_process'))
+},{"_process":17,"warning":35}],31:[function(require,module,exports){
 var pSlice = Array.prototype.slice;
 var objectKeys = require('./lib/keys.js');
 var isArguments = require('./lib/is_arguments.js');
@@ -2282,7 +2395,7 @@ function objEquiv(a, b, opts) {
   return typeof a === typeof b;
 }
 
-},{"./lib/is_arguments.js":31,"./lib/keys.js":32}],31:[function(require,module,exports){
+},{"./lib/is_arguments.js":32,"./lib/keys.js":33}],32:[function(require,module,exports){
 var supportsArgumentsClass = (function(){
   return Object.prototype.toString.call(arguments)
 })() == '[object Arguments]';
@@ -2304,7 +2417,7 @@ function unsupported(object){
     false;
 };
 
-},{}],32:[function(require,module,exports){
+},{}],33:[function(require,module,exports){
 exports = module.exports = typeof Object.keys === 'function'
   ? Object.keys : shim;
 
@@ -2315,7 +2428,7 @@ function shim (obj) {
   return keys;
 }
 
-},{}],33:[function(require,module,exports){
+},{}],34:[function(require,module,exports){
 (function (process){
 /**
  * Copyright 2013-2015, Facebook, Inc.
@@ -2324,8 +2437,6 @@ function shim (obj) {
  * This source code is licensed under the BSD-style license found in the
  * LICENSE file in the root directory of this source tree. An additional grant
  * of patent rights can be found in the PATENTS file in the same directory.
- *
- * @providesModule invariant
  */
 
 'use strict';
@@ -2359,9 +2470,9 @@ var invariant = function(condition, format, a, b, c, d, e, f) {
       var args = [a, b, c, d, e, f];
       var argIndex = 0;
       error = new Error(
-        'Invariant Violation: ' +
         format.replace(/%s/g, function() { return args[argIndex++]; })
       );
+      error.name = 'Invariant Violation';
     }
 
     error.framesToPop = 1; // we don't care about invariant's own frame
@@ -2372,7 +2483,7 @@ var invariant = function(condition, format, a, b, c, d, e, f) {
 module.exports = invariant;
 
 }).call(this,require('_process'))
-},{"_process":17}],34:[function(require,module,exports){
+},{"_process":17}],35:[function(require,module,exports){
 (function (process){
 /**
  * Copyright 2014-2015, Facebook, Inc.

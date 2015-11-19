@@ -37,7 +37,7 @@ class CommentsActions{
                 data: body })
             .done((data) => {
                 toastr.success('DIY', 'Your comment has been posted successfully!');
-                _this.actions.getComments();
+                _this.actions.getComments(userId, projectId);
             })
             .fail((jqXhr) => {
                 this.actions.postCommentsFail(jqXhr);

@@ -9,7 +9,6 @@ var ReactDOM = require('react-dom/server');
 var Router = require('react-router');
 var RoutingContext = Router.RoutingContext;
 var routes = require('./app/routes');
-var Whoops = require('./app/components/whoops');
 
 var app = express();
 

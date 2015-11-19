@@ -1,5 +1,6 @@
 import React from 'react';
 import {Link} from 'react-router';
+import Modal from 'react-modal';
 import ProjectViewStore from '../stores/ProjectViewStore';
 import ProjectViewAction from '../actions/ProjectViewAction';
 import Favourites from './favourites';
@@ -25,14 +26,41 @@ class ProjectView extends React.Component {
         this.setState(state);
     }
 
-    render() {
+    openModal(){
+        this.setState({modalIsOpen: true});
+    }
+
+    closeModal() {
+        this.setState({modalIsOpen: false});
+    }
+
+    render(){
         let comments = <br/>;
         let favourites = <br/>;
+        let content = <br/>;
+        let modal = <br/>;
         if(this.state.loadSuccess){
             comments = <Comments userId={this.props.params.user} projectId={this.props.params.project}/>;
             favourites = <Favourites userId={this.props.params.user} projectId={this.props.params.project}/>;
         }
+        if(this.state.project.contentType == 'video'){
+            modal = (
+                <Modal
+                    isOpen = {this.state.modalIsOpen}
+                    onRequestClose = {this.closeModal.bind(this)}>
+                    <video width='auto' controls>
+                    <source src={this.state.project.contentSrc[1]} />
+                    Your browser does not support this video.
+                    </video>
+                </Modal>);
+            content = (<div className='video'>
+                <img src={this.state.project.contentSrc[0]} width='auto'/>
+                <img src='/img/play-btn.png' id='play-btn' width='75px' height='75px' onClick={this.openModal.bind(this)}/>
+                </div>);
 
+        } else{
+            content = (<img src={this.state.project.contentSrc} width='auto'/>)
+        }
         return (
         <div className='outer-container'>
             <div className = 'upper-section'>
@@ -41,7 +69,8 @@ class ProjectView extends React.Component {
                     <div className='project-container'>
                         <div className='row'>
                             <div className='col-md-8'>
-                                <img src={this.state.project.contentSrc} width='auto'/>
+                                {content}
+                                {modal}
                                 <img id='favourite' src='/img/favorite.svg' width='50px' height='50px'/>
                             </div>
                             <div className='col-md-4 img'>
