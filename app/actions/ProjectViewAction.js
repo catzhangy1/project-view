@@ -12,7 +12,6 @@ class ProjectViewAction {
         if(!userId || !projectId) {
             return;
         }
-        let result = true;
         $.ajax({ url: `http://api.diy.org/makers/${userId}/projects/${projectId}/` })
             .done((data) => {
                 this.actions.getProjectSuccess(data.response)
@@ -22,7 +21,6 @@ class ProjectViewAction {
                 router.pushState(null, "/");
 
             });
-        return result;
     }
 }
 

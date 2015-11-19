@@ -1,6 +1,11 @@
 import React from 'react';
 
 class Whoops extends React.Component {
+
+    componentDidMount() {
+        //console.log("I did mount");
+    }
+
     render() {
         return (
             <div className='whoops-container'>
@@ -8,7 +13,7 @@ class Whoops extends React.Component {
                     <div className='text'>
                     <h1>Whoops-</h1>
                         <hr />
-                        <p> Looks like the project you're looking for isn't here, or you're just wild! </p>
+                        <p> Looks like the project you're looking for isn't here, or you're just being wild! </p>
                         <hr/>
                         <p style={{color: '#FFAB97'}}> <i> Hint: Enter URL as validUser/validProjectId </i> </p>
                     </div>

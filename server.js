@@ -9,6 +9,7 @@ var ReactDOM = require('react-dom/server');
 var Router = require('react-router');
 var RoutingContext = Router.RoutingContext;
 var routes = require('./app/routes');
+var Whoops = require('./app/components/whoops');
 
 var app = express();
 
@@ -29,7 +30,8 @@ app.use(function(req, res) {
             var page = swig.renderFile('views/index.html', { html: html });
             res.status(200).send(page);
         } else {
-            res.status(404).send("Page Not Found");
+            //Hopefully this is never reached;
+            res.status(404).send("not found");
         }
     });
 });

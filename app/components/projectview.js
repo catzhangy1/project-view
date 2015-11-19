@@ -10,8 +10,6 @@ class ProjectView extends React.Component {
         super(props);
         this.state = ProjectViewStore.getState();
         this.onChange = this.onChange.bind(this);
-        console.log(this.props);
-        console.log(this.props.params.user);
     }
 
     componentDidMount() {
