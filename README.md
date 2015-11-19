@@ -40,10 +40,10 @@ And lessons learned!
 				on the page. Originally, I tried to import the source SVG files and change the fill/shape, but my attempts were lackluster.
 				I wasn't sure if the approach was to modify the source SVG files. Importing the files as img's then disabled these
 				fill/shape properties. If I really wanted to, I can edit my own images of the desired fill/shape and import these
-				files into my page. For
+				files into my page. For now, I just left the shapes in its original color and changed the color-background when hovered.
 
 > 2. <b> Optimistic Loading </b> - Currently, when a comment is posted successfully, the component makes an ajax call to
-				get the updated list. I could potentially render the comment optimistically and only make calls when necessary.
+				get the updated list. I could potentially render the comment optimistically and only make 'refresh' calls when necessary.
 
 > 3. <b> Responsiveness, Etc. </b> - I wasn't really sure whether if the page should be responsive to different browser sizes,
 				and if so, how the contents would be displayed differently. I did try to keep the general structure to be flexible
@@ -56,3 +56,10 @@ And lessons learned!
 
 > 5. <b> Misc </b> - Did not implement the icons for the categories ('2D Animation', 'Various Drawing Styles', etc.). It seemed
 				like the main API calls did not return any information regarding them.
+
+> 6. <b> A Fuller Picture </b> - If I had more time, I would implement a user view page that displays a list of the user's
+				projects. In place of the category icons that are missing, as mentioned in 5), I can potentially display previews
+				of the user's other projects at the project view. This would make navigating easier for the viewer who may know a maker's
+				name but not projectId on top of their head. Instead of linking the user profile at the DIY website, we can link to
+				our own user views. Implementing this would require an additional path added to Routes, and the new React Component
+				hosting it would be similar to how ProjectView works, perhaps a bit simpler.

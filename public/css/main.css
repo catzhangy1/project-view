@@ -90,6 +90,7 @@ img{
     width: initial;
     left: 45%;
     top: 40%;
+    opacity: 0.5;
 }
 .project-container footer {
     color: #1489C4;
