@@ -1,5 +1,6 @@
 import alt from '../alt';
 import ProjectViewAction from '../actions/ProjectViewAction';
+import { Router } from 'react-router';
 
 class ProjectViewStore {
     constructor() {
@@ -10,7 +11,8 @@ class ProjectViewStore {
             title: "",
             date: "",
             contentType:"",
-            contentSrc:""}
+            contentSrc:""};
+        this.loadSuccess = false;
     }
 
     onGetProjectSuccess(data) {
@@ -22,17 +24,17 @@ class ProjectViewStore {
             contentType: data.clips[0].type,
             contentSrc: data.clips[0].assets.web_480.url
         }
+        this.loadSuccess = true;
+    }
+
+    onGetProjectFail(q) {
+        this.loadSuccess = false;
     }
 
     getDate(data) {
         const d = new Date(data);
         const date = (d.toDateString().split(" ")).splice(1);
         return [date[0], " ", date[1], ", ", date[2]].join("");
-    }
-
-    onGetProjectFail(jqXhr) {
-        // Handle multiple response formats, fallback to HTTP status code number.
-        toastr.error(jqXhr.responseJSON && jqXhr.responseJSON.message || jqXhr.responseText || jqXhr.statusText);
     }
 }
 

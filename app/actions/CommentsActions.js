@@ -1,6 +1,6 @@
 import alt from '../alt';
 
-class CommentsActions {
+class CommentsActions{
     constructor() {
         this.generateActions(
             'getCommentsSuccess',
@@ -13,11 +13,9 @@ class CommentsActions {
         if(!userId || !projectId) {
             return;
         }
-        console.log(userId);
-        console.log(projectId);
+
         $.ajax({ url: `http://api.diy.org/makers/${userId}/projects/${projectId}/comments` })
             .done((data) => {
-                console.log(data);
                 this.actions.getCommentsSuccess(data.response)
             })
             .fail((jqXhr) => {

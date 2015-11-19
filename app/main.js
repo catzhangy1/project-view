@@ -6,4 +6,7 @@ import routes from './routes';
 
 let history = createBrowserHistory();
 
-ReactDOM.render(<Router history={history}>{routes}</Router>, document.getElementById('app'));
+let router = <Router history={history}>{routes}</Router>;
+ReactDOM.render(router, document.getElementById('app'));
+
+export default router;

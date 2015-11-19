@@ -30,10 +30,8 @@ var CommentsActions = (function () {
             if (!userId || !projectId) {
                 return;
             }
-            console.log(userId);
-            console.log(projectId);
+
             $.ajax({ url: 'http://api.diy.org/makers/' + userId + '/projects/' + projectId + '/comments' }).done(function (data) {
-                console.log(data);
                 _this2.actions.getCommentsSuccess(data.response);
             }).fail(function (jqXhr) {
                 _this2.actions.getCommentsFail(jqXhr);
@@ -141,18 +139,20 @@ var ProjectViewAction = (function () {
 
     _createClass(ProjectViewAction, [{
         key: 'getProject',
-        value: function getProject(userId, projectId) {
+        value: function getProject(userId, projectId, router) {
             var _this = this;
 
             if (!userId || !projectId) {
                 return;
             }
+            var result = true;
             $.ajax({ url: 'http://api.diy.org/makers/' + userId + '/projects/' + projectId + '/' }).done(function (data) {
-                console.log(data);
                 _this.actions.getProjectSuccess(data.response);
             }).fail(function (jqXhr) {
                 _this.actions.getProjectFail(jqXhr);
+                router.pushState(null, "/");
             });
+            return result;
         }
     }]);
 
@@ -199,18 +199,6 @@ var _react = require('react');
 
 var _react2 = _interopRequireDefault(_react);
 
-var _projectview = require('./projectview');
-
-var _projectview2 = _interopRequireDefault(_projectview);
-
-var _favourites = require('./favourites');
-
-var _favourites2 = _interopRequireDefault(_favourites);
-
-var _comments = require('./comments');
-
-var _comments2 = _interopRequireDefault(_comments);
-
 var App = (function (_React$Component) {
     _inherits(App, _React$Component);
 
@@ -218,58 +206,31 @@ var App = (function (_React$Component) {
         _classCallCheck(this, App);
 
         _get(Object.getPrototypeOf(App.prototype), 'constructor', this).call(this, props);
-        this.state = {
-            userId: "",
-            projectId: ""
-        };
     }
 
     _createClass(App, [{
         key: 'componentDidMount',
-        value: function componentDidMount() {
-            this.lol();
-            console.log(this.props);
-            console.log(this.state.userId);
-            console.log(this.state.projectId);
-        }
+        value: function componentDidMount() {}
     }, {
-        key: 'lol',
-        value: function lol() {
-            this.setState({ userId: this.props.params.user, projectId: this.props.params.project });
+        key: 'componentWillUnmount',
+        value: function componentWillUnmount() {}
+    }, {
+        key: 'onChange',
+        value: function onChange(state) {
+            this.setState(state);
         }
     }, {
         key: 'render',
         value: function render() {
+            console.log(this.props);
+            //<ProjectView
+            //    userId={this.props.params.user}
+            //    projectId={this.props.params.project}
+            //    router={this.props.history}/>
             return _react2['default'].createElement(
                 'div',
-                { className: 'outer-container' },
-                _react2['default'].createElement(
-                    'div',
-                    { className: 'upper-section' },
-                    _react2['default'].createElement(
-                        'div',
-                        { className: 'inner-container' },
-                        _react2['default'].createElement(_projectview2['default'], { userId: this.props.params.user, projectId: this.props.params.project })
-                    )
-                ),
-                _react2['default'].createElement(
-                    'div',
-                    { className: 'inner-container' },
-                    _react2['default'].createElement(
-                        'div',
-                        { className: 'row' },
-                        _react2['default'].createElement(
-                            'div',
-                            { className: 'col-sm-8' },
-                            _react2['default'].createElement(_comments2['default'], { userId: this.props.params.user, projectId: this.props.params.project })
-                        ),
-                        _react2['default'].createElement(
-                            'div',
-                            { className: 'col-md-4 col-sm-4' },
-                            _react2['default'].createElement(_favourites2['default'], { userId: this.props.params.user, projectId: this.props.params.project })
-                        )
-                    )
-                )
+                null,
+                this.props.children
             );
         }
     }]);
@@ -280,7 +241,7 @@ var App = (function (_React$Component) {
 exports['default'] = App;
 module.exports = exports['default'];
 
-},{"./comments":9,"./favourites":10,"./projectview":11,"react":"react"}],6:[function(require,module,exports){
+},{"react":"react"}],6:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -566,6 +527,162 @@ var _react = require('react');
 
 var _react2 = _interopRequireDefault(_react);
 
+var _reactRouter = require('react-router');
+
+var _storesProjectViewStore = require('../stores/ProjectViewStore');
+
+var _storesProjectViewStore2 = _interopRequireDefault(_storesProjectViewStore);
+
+var _actionsProjectViewAction = require('../actions/ProjectViewAction');
+
+var _actionsProjectViewAction2 = _interopRequireDefault(_actionsProjectViewAction);
+
+var _favourites = require('./favourites');
+
+var _favourites2 = _interopRequireDefault(_favourites);
+
+var _comments = require('./comments');
+
+var _comments2 = _interopRequireDefault(_comments);
+
+var ProjectView = (function (_React$Component) {
+    _inherits(ProjectView, _React$Component);
+
+    function ProjectView(props) {
+        _classCallCheck(this, ProjectView);
+
+        _get(Object.getPrototypeOf(ProjectView.prototype), 'constructor', this).call(this, props);
+        this.state = _storesProjectViewStore2['default'].getState();
+        this.onChange = this.onChange.bind(this);
+        console.log(this.props);
+        console.log(this.props.params.user);
+    }
+
+    _createClass(ProjectView, [{
+        key: 'componentDidMount',
+        value: function componentDidMount() {
+            _storesProjectViewStore2['default'].listen(this.onChange);
+            _actionsProjectViewAction2['default'].getProject(this.props.params.user, this.props.params.project, this.props.history);
+        }
+    }, {
+        key: 'componentWillUnmount',
+        value: function componentWillUnmount() {
+            _storesProjectViewStore2['default'].unlisten(this.onChange);
+        }
+    }, {
+        key: 'onChange',
+        value: function onChange(state) {
+            this.setState(state);
+        }
+    }, {
+        key: 'render',
+        value: function render() {
+            var comments = _react2['default'].createElement('br', null);
+            var favourites = _react2['default'].createElement('br', null);
+            if (this.state.loadSuccess) {
+                comments = _react2['default'].createElement(_comments2['default'], { userId: this.props.params.user, projectId: this.props.params.project });
+                favourites = _react2['default'].createElement(_favourites2['default'], { userId: this.props.params.user, projectId: this.props.params.project });
+            }
+
+            return _react2['default'].createElement(
+                'div',
+                { className: 'outer-container' },
+                _react2['default'].createElement(
+                    'div',
+                    { className: 'upper-section' },
+                    _react2['default'].createElement(
+                        'div',
+                        { className: 'inner-container' },
+                        _react2['default'].createElement(
+                            'div',
+                            { className: 'project-container' },
+                            _react2['default'].createElement(
+                                'div',
+                                { className: 'row' },
+                                _react2['default'].createElement(
+                                    'div',
+                                    { className: 'col-md-8' },
+                                    _react2['default'].createElement('img', { src: this.state.project.contentSrc, width: 'auto' })
+                                ),
+                                _react2['default'].createElement(
+                                    'div',
+                                    { className: 'col-md-4 img' },
+                                    _react2['default'].createElement(
+                                        'h3',
+                                        null,
+                                        this.state.project.title
+                                    ),
+                                    _react2['default'].createElement(
+                                        'p',
+                                        null,
+                                        this.state.project.date
+                                    ),
+                                    _react2['default'].createElement(
+                                        'footer',
+                                        null,
+                                        _react2['default'].createElement('img', { src: this.state.project.iconsrc }),
+                                        _react2['default'].createElement(
+                                            'span',
+                                            null,
+                                            ' ',
+                                            this.state.project.username,
+                                            ' '
+                                        )
+                                    )
+                                )
+                            )
+                        )
+                    )
+                ),
+                _react2['default'].createElement(
+                    'div',
+                    { className: 'inner-container' },
+                    _react2['default'].createElement(
+                        'div',
+                        { className: 'row' },
+                        _react2['default'].createElement(
+                            'div',
+                            { className: 'col-sm-8' },
+                            comments
+                        ),
+                        _react2['default'].createElement(
+                            'div',
+                            { className: 'col-md-4 col-sm-4' },
+                            favourites
+                        )
+                    )
+                )
+            );
+        }
+    }]);
+
+    return ProjectView;
+})(_react2['default'].Component);
+
+exports['default'] = ProjectView;
+module.exports = exports['default'];
+
+},{"../actions/ProjectViewAction":3,"../stores/ProjectViewStore":16,"./comments":10,"./favourites":11,"react":"react","react-router":"react-router"}],9:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, '__esModule', {
+    value: true
+});
+
+var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+
+var _get = function get(_x, _x2, _x3) { var _again = true; _function: while (_again) { var object = _x, property = _x2, receiver = _x3; _again = false; if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { _x = parent; _x2 = property; _x3 = receiver; _again = true; desc = parent = undefined; continue _function; } } else if ('value' in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } } };
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+var _react = require('react');
+
+var _react2 = _interopRequireDefault(_react);
+
 var Whoops = (function (_React$Component) {
     _inherits(Whoops, _React$Component);
 
@@ -576,12 +693,47 @@ var Whoops = (function (_React$Component) {
     }
 
     _createClass(Whoops, [{
+        key: 'componentDidMount',
+        value: function componentDidMount() {
+            console.log("I did mount");
+        }
+    }, {
         key: 'render',
         value: function render() {
             return _react2['default'].createElement(
                 'div',
-                { className: 'alert alert-info' },
-                'Nope'
+                { className: 'whoops-container' },
+                _react2['default'].createElement(
+                    'h3',
+                    null,
+                    '!'
+                ),
+                _react2['default'].createElement(
+                    'div',
+                    { className: 'text' },
+                    _react2['default'].createElement(
+                        'h1',
+                        null,
+                        'Whoops-'
+                    ),
+                    _react2['default'].createElement(
+                        'p',
+                        null,
+                        ' Looks like the project you\'re looking for isn\'t here, or you\'re just wild! '
+                    ),
+                    _react2['default'].createElement('hr', null),
+                    _react2['default'].createElement(
+                        'p',
+                        { style: 'color: #FFAB97' },
+                        ' ',
+                        _react2['default'].createElement(
+                            'i',
+                            null,
+                            ' Hint: Enter URL as validUser/validProjectId '
+                        ),
+                        ' '
+                    )
+                )
             );
         }
     }]);
@@ -592,7 +744,7 @@ var Whoops = (function (_React$Component) {
 exports['default'] = Whoops;
 module.exports = exports['default'];
 
-},{"react":"react"}],9:[function(require,module,exports){
+},{"react":"react"}],10:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -717,7 +869,7 @@ var Comments = (function (_React$Component) {
 exports['default'] = Comments;
 module.exports = exports['default'];
 
-},{"../actions/CommentsActions":1,"../stores/CommentsStore":14,"./CommentForm":6,"./CommentsDetail":7,"react":"react","react-router":"react-router"}],10:[function(require,module,exports){
+},{"../actions/CommentsActions":1,"../stores/CommentsStore":14,"./CommentForm":6,"./CommentsDetail":7,"react":"react","react-router":"react-router"}],11:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -834,117 +986,12 @@ var Favourites = (function (_React$Component) {
 exports['default'] = Favourites;
 module.exports = exports['default'];
 
-},{"../actions/FavouritesActions":2,"../stores/FavouritesStore":15,"react":"react","react-router":"react-router"}],11:[function(require,module,exports){
+},{"../actions/FavouritesActions":2,"../stores/FavouritesStore":15,"react":"react","react-router":"react-router"}],12:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
-    value: true
+  value: true
 });
-
-var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
-
-var _get = function get(_x, _x2, _x3) { var _again = true; _function: while (_again) { var object = _x, property = _x2, receiver = _x3; _again = false; if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { _x = parent; _x2 = property; _x3 = receiver; _again = true; desc = parent = undefined; continue _function; } } else if ('value' in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } } };
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
-
-function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-
-var _react = require('react');
-
-var _react2 = _interopRequireDefault(_react);
-
-var _reactRouter = require('react-router');
-
-var _storesProjectViewStore = require('../stores/ProjectViewStore');
-
-var _storesProjectViewStore2 = _interopRequireDefault(_storesProjectViewStore);
-
-var _actionsProjectViewAction = require('../actions/ProjectViewAction');
-
-var _actionsProjectViewAction2 = _interopRequireDefault(_actionsProjectViewAction);
-
-var ProjectView = (function (_React$Component) {
-    _inherits(ProjectView, _React$Component);
-
-    function ProjectView(props) {
-        _classCallCheck(this, ProjectView);
-
-        _get(Object.getPrototypeOf(ProjectView.prototype), 'constructor', this).call(this, props);
-        this.state = _storesProjectViewStore2['default'].getState();
-        this.onChange = this.onChange.bind(this);
-    }
-
-    _createClass(ProjectView, [{
-        key: 'componentDidMount',
-        value: function componentDidMount() {
-            _storesProjectViewStore2['default'].listen(this.onChange);
-            _actionsProjectViewAction2['default'].getProject(this.props.userId, this.props.projectId);
-        }
-    }, {
-        key: 'componentWillUnmount',
-        value: function componentWillUnmount() {
-            _storesProjectViewStore2['default'].unlisten(this.onChange);
-        }
-    }, {
-        key: 'onChange',
-        value: function onChange(state) {
-            this.setState(state);
-        }
-    }, {
-        key: 'render',
-        value: function render() {
-            return _react2['default'].createElement(
-                'div',
-                { className: 'project-container' },
-                _react2['default'].createElement(
-                    'div',
-                    { className: 'row' },
-                    _react2['default'].createElement(
-                        'div',
-                        { className: 'col-md-8' },
-                        _react2['default'].createElement('img', { src: this.state.project.contentSrc, width: 'auto' })
-                    ),
-                    _react2['default'].createElement(
-                        'div',
-                        { className: 'col-md-4 img' },
-                        _react2['default'].createElement(
-                            'h3',
-                            null,
-                            this.state.project.title
-                        ),
-                        _react2['default'].createElement(
-                            'p',
-                            null,
-                            this.state.project.date
-                        ),
-                        _react2['default'].createElement(
-                            'footer',
-                            null,
-                            _react2['default'].createElement('img', { src: this.state.project.iconsrc }),
-                            _react2['default'].createElement(
-                                'span',
-                                null,
-                                ' ',
-                                this.state.project.username,
-                                ' '
-                            )
-                        )
-                    )
-                )
-            );
-        }
-    }]);
-
-    return ProjectView;
-})(_react2['default'].Component);
-
-exports['default'] = ProjectView;
-module.exports = exports['default'];
-
-},{"../actions/ProjectViewAction":3,"../stores/ProjectViewStore":16,"react":"react","react-router":"react-router"}],12:[function(require,module,exports){
-'use strict';
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
 
@@ -970,11 +1017,15 @@ var _routes2 = _interopRequireDefault(_routes);
 
 var history = (0, _historyLibCreateBrowserHistory2['default'])();
 
-_reactDom2['default'].render(_react2['default'].createElement(
+var router = _react2['default'].createElement(
   _reactRouter2['default'],
   { history: history },
   _routes2['default']
-), document.getElementById('app'));
+);
+_reactDom2['default'].render(router, document.getElementById('app'));
+
+exports['default'] = router;
+module.exports = exports['default'];
 
 },{"./routes":13,"history/lib/createBrowserHistory":23,"react":"react","react-dom":"react-dom","react-router":"react-router"}],13:[function(require,module,exports){
 'use strict';
@@ -999,18 +1050,20 @@ var _componentsWhoops = require('./components/Whoops');
 
 var _componentsWhoops2 = _interopRequireDefault(_componentsWhoops);
 
-exports['default'] = _react2['default'].createElement(
+var _componentsProjectView = require('./components/ProjectView');
+
+var _componentsProjectView2 = _interopRequireDefault(_componentsProjectView);
+
+var routes = _react2['default'].createElement(
     _reactRouter.Route,
-    null,
-    _react2['default'].createElement(
-        _reactRouter.Route,
-        { path: '/:user/:project', component: _componentsApp2['default'] },
-        _react2['default'].createElement(_reactRouter.Route, { path: '*', component: _componentsWhoops2['default'] })
-    )
+    { path: '/', component: _componentsApp2['default'] },
+    _react2['default'].createElement(_reactRouter.IndexRoute, { component: _componentsWhoops2['default'] }),
+    _react2['default'].createElement(_reactRouter.Route, { path: ':user/:project', component: _componentsProjectView2['default'] })
 );
+exports['default'] = routes;
 module.exports = exports['default'];
 
-},{"./components/App":5,"./components/Whoops":8,"react":"react","react-router":"react-router"}],14:[function(require,module,exports){
+},{"./components/App":5,"./components/ProjectView":8,"./components/Whoops":9,"react":"react","react-router":"react-router"}],14:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -1219,6 +1272,8 @@ var _actionsProjectViewAction = require('../actions/ProjectViewAction');
 
 var _actionsProjectViewAction2 = _interopRequireDefault(_actionsProjectViewAction);
 
+var _reactRouter = require('react-router');
+
 var ProjectViewStore = (function () {
     function ProjectViewStore() {
         _classCallCheck(this, ProjectViewStore);
@@ -1231,6 +1286,7 @@ var ProjectViewStore = (function () {
             date: "",
             contentType: "",
             contentSrc: "" };
+        this.loadSuccess = false;
     }
 
     _createClass(ProjectViewStore, [{
@@ -1244,6 +1300,12 @@ var ProjectViewStore = (function () {
                 contentType: data.clips[0].type,
                 contentSrc: data.clips[0].assets.web_480.url
             };
+            this.loadSuccess = true;
+        }
+    }, {
+        key: 'onGetProjectFail',
+        value: function onGetProjectFail(q) {
+            this.loadSuccess = false;
         }
     }, {
         key: 'getDate',
@@ -1251,12 +1313,6 @@ var ProjectViewStore = (function () {
             var d = new Date(data);
             var date = d.toDateString().split(" ").splice(1);
             return [date[0], " ", date[1], ", ", date[2]].join("");
-        }
-    }, {
-        key: 'onGetProjectFail',
-        value: function onGetProjectFail(jqXhr) {
-            // Handle multiple response formats, fallback to HTTP status code number.
-            toastr.error(jqXhr.responseJSON && jqXhr.responseJSON.message || jqXhr.responseText || jqXhr.statusText);
         }
     }]);
 
@@ -1266,7 +1322,7 @@ var ProjectViewStore = (function () {
 exports['default'] = _alt2['default'].createStore(ProjectViewStore);
 module.exports = exports['default'];
 
-},{"../actions/ProjectViewAction":3,"../alt":4}],17:[function(require,module,exports){
+},{"../actions/ProjectViewAction":3,"../alt":4,"react-router":"react-router"}],17:[function(require,module,exports){
 // shim for using process in browser
 
 var process = module.exports = {};

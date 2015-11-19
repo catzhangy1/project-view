@@ -168,6 +168,45 @@ textarea:focus {
     box-shadow: none;
 }
 
+.whoops-container {
+    background-color: #FF8063;
+    margin-left: auto;
+    margin-right: auto;
+    width: 700px;
+    min-height: 500px;
+    border-radius: 10px;
+    top: 100px;
+    padding-top: 20px;
+    position: relative;
+    text-align: left;
+    color: white;
+    border-left: solid 200px #FA6948
+}
+
+.whoops-container h3 {
+    font-size: 500px;
+    position: absolute;
+    left: -150px;
+    line-height: 1;
+}
+.whoops-container .text {
+    margin-left: 50px;
+}
+
+.whoops-container .text h1 {
+    font-size: 100px;
+    font-weight: 600;
+}
+.whoops-container .text p {
+    font-size:32px;
+}
+.whoops-container .text hr{
+    border: none;
+    height: 0;
+    border-top: 5px solid #FA6948;
+    margin-left: 10px;
+    margin-right: 30px;
+}
 .badge-danger {
     color: #fff;
     background-color: #f05150;

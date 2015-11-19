@@ -1,12 +1,11 @@
 import React from 'react';
-import {Route} from 'react-router';
+import {Route, IndexRoute} from 'react-router';
 import App from './components/App';
 import Whoops from './components/Whoops';
+import ProjectView from './components/ProjectView';
 
-export default (
-    <Route>
-        <Route path='/:user/:project' component={App} >
-            <Route path='*' component={Whoops} />
-        </Route>
-    </Route>
-);
+const routes = (<Route path ="/" component={App}>
+    <IndexRoute component={Whoops} />
+    <Route path=':user/:project'component={ProjectView}/>
+</Route>);
+export default routes;
