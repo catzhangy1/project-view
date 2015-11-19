@@ -44,7 +44,9 @@
     "request": "^2.65.0",
     "swig": "^1.4.2",
     "underscore": "^1.8.3",
-    "xml2js": "^0.4.13"
+    "xml2js": "^0.4.13",
+    "vinyl-source-stream": "^1.1.0",
+    "watchify": "^3.4.0"
   },
   "devDependencies": {
     "babelify": "^6.3.0",
