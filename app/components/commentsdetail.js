@@ -16,10 +16,9 @@ class CommentsDetail extends React.Component {
     }
 
     render() {
-        const _this = this;
         const userUrl = `http://www.diy.org/${this.props.comment[0].url}`;
         let nestedComments = this.props.comment.slice().splice(1); //makes copy of nestedComments so props.comment is unmodified
-        let comments = nestedComments.map(function (c) {
+        let comments = nestedComments.map((c) => {
             let userURL = `http://www.diy.org/${c.url}`;
             return (
                 <div className ='nested-comments-container' key={c.rawDate}>
@@ -27,7 +26,7 @@ class CommentsDetail extends React.Component {
                     <div className = 'comments'>
                         <span><a href ={userURL}>  <strong> {c.user} </strong> </a>{c.date}</span>
                         <p> {c.content} </p>
-                        <img src= "/img/reply.svg" onClick={_this.addReply.bind(_this, c.id, c.user)} height='25px' width='25px'/>
+                        <img src= "/img/reply.svg" onClick={this.addReply.bind(this, c.id, c.user)} height='25px' width='25px'/>
                     </div>
                 </div>
             )

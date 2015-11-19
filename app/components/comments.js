@@ -39,13 +39,11 @@ class Comments extends React.Component {
     }
 
     render() {
-        const _this = this;
-        let comments = this.state.comments.map(
-            function (comment) {
+        let comments = this.state.comments.map((comment) => {
                 return (
                     <CommentsDetail
                     comment={comment}
-                    updateReplyTo={_this.updateReplyTo.bind(_this)}/>
+                    updateReplyTo={this.updateReplyTo.bind(this)}/>
                 )
             }
         );

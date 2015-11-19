@@ -50,7 +50,7 @@ class CommentsStore {
             let newReplyIds = [];
             commentblock.push(data.filter(
                 function (a) {
-                    var result = currentReplyIds.some(function (o) {
+                    var result = currentReplyIds.some((o) => {
                         return o == a.replyId;
                     });
                     if (result) {
@@ -67,7 +67,7 @@ class CommentsStore {
             }
         }
         commentblock.pop();
-        commentblock = commentblock.reduce(function (a, b){
+        commentblock = commentblock.reduce((a, b) => {
             return a.concat(b);
         });
         return commentblock;

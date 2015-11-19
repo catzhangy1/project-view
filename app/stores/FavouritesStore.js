@@ -9,7 +9,7 @@ class FavouritesStore {
     }
 
     onGetFavouritesSuccess(data) {
-        this.favourites = data.map(function (a) {
+        this.favourites = data.map((a) => {
             return {
                 "username": a.nickname,
                 "url": a.url,

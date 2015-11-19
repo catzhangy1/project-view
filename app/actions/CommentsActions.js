@@ -26,7 +26,6 @@ class CommentsActions{
         if(!userId || !projectId) {
             return;
         }
-        const _this = this;
         $.ajax({url: `http://api.diy.org/makers/${userId}/projects/${projectId}/comments`,
                 headers: {'x-diy-api-token': '30b28060b2b06a954c334ad2c92a8d85b58316d9'},
                 type: 'POST',
@@ -35,7 +34,7 @@ class CommentsActions{
                 data: body})
             .done((data) => {
                 toastr.success('DIY', 'Your comment has been posted successfully!');
-                _this.actions.getComments(userId, projectId);
+                this.actions.getComments(userId, projectId);
             })
             .fail((jqXhr) => {
                 this.actions.postCommentsFail(jqXhr);
