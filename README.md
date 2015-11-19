@@ -3,7 +3,7 @@
 
 *Catherine Zhang* <br>
 
-** Testing on Node Server** <br>
+**Testing on Node Server** <br>
 I used the following commands to start up my project locally:
 
 ```
