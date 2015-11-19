@@ -1,5 +1,5 @@
 var gulp = require('gulp');
-var gutil = require('gulp-util');
+//var gutil = require('gulp-util');
 var gulpif = require('gulp-if');
 var streamify = require('gulp-streamify');
 var autoprefixer = require('gulp-autoprefixer');
@@ -85,10 +85,10 @@ gulp.task('browserify-watch', ['browserify-vendor'], function() {
         var start = Date.now();
         return bundler.bundle()
             .on('error', function(err) {
-                gutil.log(gutil.colors.red(err.toString()));
+                //gutil.log(gutil.colors.red(err.toString()));
             })
             .on('end', function() {
-                gutil.log(gutil.colors.green('Finished rebundling in', (Date.now() - start) + 'ms.'));
+                //gutil.log(gutil.colors.green('Finished rebundling in', (Date.now() - start) + 'ms.'));
             })
             .pipe(source('bundle.js'))
             .pipe(gulp.dest('public/js/'));
