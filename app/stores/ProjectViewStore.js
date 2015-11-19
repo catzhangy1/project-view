@@ -7,6 +7,7 @@ class ProjectViewStore {
         this.bindActions(ProjectViewAction);
         this.project = {
             username: "",
+            url: "",
             iconsrc: "",
             title: "",
             date: "",
@@ -19,6 +20,7 @@ class ProjectViewStore {
     onGetProjectSuccess(data) {
         this.project = {
             username: data.maker.nickname,
+            url: data.maker.url,
             iconsrc: data.maker.avatar.icon.url,
             title: data.title,
             date: this.getDate(data.stamp),

@@ -34,11 +34,14 @@ class ProjectView extends React.Component {
         this.setState({modalIsOpen: false});
     }
 
+    getUserURL() {
+        return `http://www.diy.org/${this.state.url}`;
+    }
+
     render(){
-        let comments = <br/>;
-        let favourites = <br/>;
-        let content = <br/>;
-        let modal = <br/>;
+        let comments, favourites, content, modal;
+        comments = favourites = content = modal = <br/>;
+        let userURL = `http://www.diy.org/${this.state.project.url}`;
         if(this.state.loadSuccess){
             comments = <Comments userId={this.props.params.user} projectId={this.props.params.project}/>;
             favourites = <Favourites userId={this.props.params.user} projectId={this.props.params.project}/>;
@@ -77,8 +80,10 @@ class ProjectView extends React.Component {
                                 <h3>{this.state.project.title}</h3>
                                 <p>{this.state.project.date}</p>
                                 <footer>
+                                    <a href={userURL}>
                                     <img src={this.state.project.iconsrc} />
                                     <span> {this.state.project.username} </span>
+                                        </a>
                                 </footer>
                             </div>
                         </div>

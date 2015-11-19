@@ -34,8 +34,11 @@ class Favourites extends React.Component {
     render() {
         let _this = this;
         let users = this.state.favourites.map(function (user) {
+            let url = `http://www.diy.org/${user.url}`;
             return <div className = 'user'>
-                    <img src= {user.icon}/> <span> {_this.truncate(user.username)} </span>
+                    <a href ={url}>
+                        <img src= {user.icon}/> <span> {_this.truncate(user.username)} </span>
+                    </a>
                 </div>
 
         });
