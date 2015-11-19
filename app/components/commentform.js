@@ -1,7 +1,11 @@
 import React from 'react';
-import {Link} from 'react-router';
 import CommentsActions from '../actions/CommentsActions';
 
+/**
+ * CommentForm is a component that renders the form box
+ * for the user to input and submit a comment response to the project or to specific comments.
+ * It is included in Comments.
+ */
 class CommentForm extends React.Component {
     constructor(props) {
         super(props);
@@ -9,7 +13,6 @@ class CommentForm extends React.Component {
         this.state = {
             icon: "",
             username: "",
-            url: "",
             value: ""
         };
     }
@@ -19,7 +22,6 @@ class CommentForm extends React.Component {
     }
 
     getUserInfo() {
-        let result = {};
         $.ajax({url: 'https://api.diy.org/makers/catzhangy1'})
             .done((data) => {
                 data = data.response;
@@ -30,16 +32,14 @@ class CommentForm extends React.Component {
                 });
             })
             .fail((jqXhr) => {
-                console.log(jqXhr);
-                result = jqXhr;
+                toastr.error(jqXhr.responseJSON && jqXhr.responseJSON.message || jqXhr.responseText || jqXhr.statusText);
             });
-        return result;
     }
 
     handleSubmit(e) {
         e.preventDefault();
         let result;
-        let body = this.refs.text.value.trim();
+        const body = this.refs.text.value.trim();
         if(!body){
             return;
         }
@@ -49,7 +49,7 @@ class CommentForm extends React.Component {
     }
 
     updateForm() {
-        let newValue = this.refs.text.value;
+        const newValue = this.refs.text.value;
         this.props.updateValue(newValue);
     }
 
@@ -65,21 +65,18 @@ class CommentForm extends React.Component {
         return (
             <div className='comments-container'>
                 <img src={this.state.icon} width='60px'/>
-
                 <div className='comments'>
                     <span> <strong> {this.state.username} </strong> </span>
-
                     <div className="form-container">
                         <form className="commentForm" onSubmit={this.handleSubmit.bind(this)}>
-                            <textarea type="text" maxLength="140" placeholder="Add a new comment" ref="text" value ={this.props.value} onChange={this.updateForm}/>
+                            <textarea type="text" maxLength="100" placeholder="Add a new comment" ref="text" value={this.props.value} onChange={this.updateForm}/>
                             <input type="submit" value="Post"/>
                         </form>
                     </div>
                 </div>
             </div>
-
         );
-        }
+    }
 }
 
 export default CommentForm;

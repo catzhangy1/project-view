@@ -1,10 +1,14 @@
 import React from 'react';
-import {Link} from 'react-router';
 import CommentsStore from '../stores/CommentsStore';
 import CommentsActions from '../actions/CommentsActions';
 import CommentsDetail from "./CommentsDetail";
 import CommentForm from "./CommentForm";
 
+/**
+ * Comments is a container component for
+ * 1) A list of CommentDetails for the project
+ * 2) A CommentForm at the end
+ */
 class Comments extends React.Component {
     constructor(props) {
         super(props);
@@ -30,7 +34,7 @@ class Comments extends React.Component {
     }
 
     updateReplyTo(val, username){
-        let user = "@" + username;
+        const user = "@" + username;
         this.setState({currentReplyTo: val, currentReplyToUser: user});
     }
 
@@ -38,9 +42,11 @@ class Comments extends React.Component {
         const _this = this;
         let comments = this.state.comments.map(
             function (comment) {
-                return <CommentsDetail
-                     comment= {comment}
-                     updateReplyTo={_this.updateReplyTo.bind(_this)}/>
+                return (
+                    <CommentsDetail
+                    comment={comment}
+                    updateReplyTo={_this.updateReplyTo.bind(_this)}/>
+                )
             }
         );
 

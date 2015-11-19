@@ -9,19 +9,14 @@ class FavouritesStore {
     }
 
     onGetFavouritesSuccess(data) {
-        this.favourites = data.map( function (a) {
-        return {"username": a.nickname,
+        this.favourites = data.map(function (a) {
+            return {
+                "username": a.nickname,
                 "url": a.url,
-                "icon": a.avatar.icon.url}
+                "icon": a.avatar.icon.url
             }
-        );
+        });
         this.size = data.length;
-    }
-
-    getDate(data) {
-        const d = new Date(data);
-        const date = (d.toDateString().split(" ")).splice(1);
-        return [date[0], " ", date[1], ", ", date[2]].join("");
     }
 
     onGetFavouritesFail(jqXhr) {

@@ -1,11 +1,16 @@
 import React from 'react';
-import {Link} from 'react-router';
 import Modal from 'react-modal';
 import ProjectViewStore from '../stores/ProjectViewStore';
 import ProjectViewAction from '../actions/ProjectViewAction';
 import Favourites from './favourites';
 import Comments from './comments';
 
+/**
+ * ProjectView is a container component that renders the project view, which includes:
+ * 1) the overview with img/video
+ * 2) comments
+ * 3) favourites
+ */
 class ProjectView extends React.Component {
     constructor(props) {
         super(props);
@@ -34,41 +39,43 @@ class ProjectView extends React.Component {
         this.setState({modalIsOpen: false});
     }
 
-    getUserURL() {
-        return `http://www.diy.org/${this.state.url}`;
-    }
-
     render(){
         let comments, favourites, content, modal;
         comments = favourites = content = modal = <br/>;
         let userURL = `http://www.diy.org/${this.state.project.url}`;
-        if(this.state.loadSuccess){
-            comments = <Comments userId={this.props.params.user} projectId={this.props.params.project}/>;
-            favourites = <Favourites userId={this.props.params.user} projectId={this.props.params.project}/>;
+
+        //load comments and favourites only if project can be found;
+        if (this.state.loadSuccess){
+            comments = <Comments userId={this.props.params.user} projectId={this.props.params.project} />;
+            favourites = <Favourites userId={this.props.params.user} projectId={this.props.params.project} />;
         }
-        if(this.state.project.contentType == 'video'){
+
+        //image and video display
+        if (this.state.project.contentType == 'video'){
             modal = (
                 <Modal
-                    isOpen = {this.state.modalIsOpen}
-                    onRequestClose = {this.closeModal.bind(this)}>
+                    isOpen={this.state.modalIsOpen}
+                    onRequestClose={this.closeModal.bind(this)}>
                     <video width='auto' controls>
                     <source src={this.state.project.contentSrc[1]} />
                     Your browser does not support this video.
                     </video>
-                </Modal>);
-            content = (<div className='video'>
-                <img src={this.state.project.contentSrc[0]} width='auto'/>
-                <img src='/img/play-btn.png' id='play-btn' width='75px' height='75px' onClick={this.openModal.bind(this)}/>
-                </div>);
+                </Modal>
+            );
+            content = (
+                <div className='video'>
+                    <img src={this.state.project.contentSrc[0]} width='auto' />
+                    <img src='/img/play-btn.png' id='play-btn' width='75px' height='75px' onClick={this.openModal.bind(this)} />
+                </div>
+            );
 
         } else{
-            content = (<img src={this.state.project.contentSrc} width='auto'/>)
+            content = (<img src={this.state.project.contentSrc} width='auto' />);
         }
         return (
-        <div className='outer-container'>
+            <div className='outer-container'>
             <div className = 'upper-section'>
                 <div className ='inner-container'>
-
                     <div className='project-container'>
                         <div className='row'>
                             <div className='col-md-8'>
@@ -81,9 +88,9 @@ class ProjectView extends React.Component {
                                 <p>{this.state.project.date}</p>
                                 <footer>
                                     <a href={userURL}>
-                                    <img src={this.state.project.iconsrc} />
-                                    <span> {this.state.project.username} </span>
-                                        </a>
+                                        <img src={this.state.project.iconsrc} />
+                                        <span> {this.state.project.username} </span>
+                                    </a>
                                 </footer>
                             </div>
                         </div>
@@ -102,7 +109,7 @@ class ProjectView extends React.Component {
                 </div>
             </div>
 
-        </div>
+         </div>
 
         );
     }

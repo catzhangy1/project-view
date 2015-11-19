@@ -10,31 +10,29 @@ class CommentsActions{
     }
 
     getComments(userId, projectId) {
-        if(!userId || !projectId) {
+        if (!userId || !projectId) {
             return;
         }
-
-        $.ajax({ url: `http://api.diy.org/makers/${userId}/projects/${projectId}/comments` })
+        $.ajax({url: `http://api.diy.org/makers/${userId}/projects/${projectId}/comments`})
             .done((data) => {
-                this.actions.getCommentsSuccess(data.response)
+                this.actions.getCommentsSuccess(data.response);
             })
             .fail((jqXhr) => {
-                this.actions.getCommentsFail(jqXhr)
+                this.actions.getCommentsFail(jqXhr);
             });
     }
-
 
     postComments(userId, projectId, body) {
         if(!userId || !projectId) {
             return;
         }
         const _this = this;
-        $.ajax({ url: `http://api.diy.org/makers/${userId}/projects/${projectId}/comments`,
+        $.ajax({url: `http://api.diy.org/makers/${userId}/projects/${projectId}/comments`,
                 headers: {'x-diy-api-token': '30b28060b2b06a954c334ad2c92a8d85b58316d9'},
                 type: 'POST',
                 processData: false,
                 contentType: 'application/json',
-                data: body })
+                data: body})
             .done((data) => {
                 toastr.success('DIY', 'Your comment has been posted successfully!');
                 _this.actions.getComments(userId, projectId);
@@ -43,8 +41,6 @@ class CommentsActions{
                 this.actions.postCommentsFail(jqXhr);
             });
     }
-
-
 }
 
 export default alt.createActions(CommentsActions);

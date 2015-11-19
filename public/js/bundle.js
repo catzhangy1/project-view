@@ -30,7 +30,6 @@ var CommentsActions = (function () {
             if (!userId || !projectId) {
                 return;
             }
-
             $.ajax({ url: 'http://api.diy.org/makers/' + userId + '/projects/' + projectId + '/comments' }).done(function (data) {
                 _this2.actions.getCommentsSuccess(data.response);
             }).fail(function (jqXhr) {
@@ -99,7 +98,6 @@ var FavouritesActions = (function () {
                 return;
             }
             $.ajax({ url: 'http://api.diy.org/makers/' + userId + '/projects/' + projectId + '/favorites' }).done(function (data) {
-                console.log(data);
                 _this.actions.getFavouritesSuccess(data.response);
             }).fail(function (jqXhr) {
                 _this.actions.getFavouritesFail(jqXhr);
@@ -197,6 +195,10 @@ var _react = require('react');
 
 var _react2 = _interopRequireDefault(_react);
 
+/**
+ * App is the container component for all React components rendered.
+ */
+
 var App = (function (_React$Component) {
     _inherits(App, _React$Component);
 
@@ -207,11 +209,6 @@ var App = (function (_React$Component) {
     }
 
     _createClass(App, [{
-        key: 'onChange',
-        value: function onChange(state) {
-            this.setState(state);
-        }
-    }, {
         key: 'render',
         value: function render() {
             return _react2['default'].createElement(
@@ -249,11 +246,15 @@ var _react = require('react');
 
 var _react2 = _interopRequireDefault(_react);
 
-var _reactRouter = require('react-router');
-
 var _actionsCommentsActions = require('../actions/CommentsActions');
 
 var _actionsCommentsActions2 = _interopRequireDefault(_actionsCommentsActions);
+
+/**
+ * CommentForm is a component that renders the form box
+ * for the user to input and submit a comment response to the project or to specific comments.
+ * It is included in Comments.
+ */
 
 var CommentForm = (function (_React$Component) {
     _inherits(CommentForm, _React$Component);
@@ -266,7 +267,6 @@ var CommentForm = (function (_React$Component) {
         this.state = {
             icon: "",
             username: "",
-            url: "",
             value: ""
         };
     }
@@ -281,7 +281,6 @@ var CommentForm = (function (_React$Component) {
         value: function getUserInfo() {
             var _this = this;
 
-            var result = {};
             $.ajax({ url: 'https://api.diy.org/makers/catzhangy1' }).done(function (data) {
                 data = data.response;
                 _this.setState({
@@ -290,10 +289,8 @@ var CommentForm = (function (_React$Component) {
                     icon: data.avatar.small.url
                 });
             }).fail(function (jqXhr) {
-                console.log(jqXhr);
-                result = jqXhr;
+                toastr.error(jqXhr.responseJSON && jqXhr.responseJSON.message || jqXhr.responseText || jqXhr.statusText);
             });
-            return result;
         }
     }, {
         key: 'handleSubmit',
@@ -353,7 +350,7 @@ var CommentForm = (function (_React$Component) {
                         _react2['default'].createElement(
                             'form',
                             { className: 'commentForm', onSubmit: this.handleSubmit.bind(this) },
-                            _react2['default'].createElement('textarea', { type: 'text', maxLength: '140', placeholder: 'Add a new comment', ref: 'text', value: this.props.value, onChange: this.updateForm }),
+                            _react2['default'].createElement('textarea', { type: 'text', maxLength: '100', placeholder: 'Add a new comment', ref: 'text', value: this.props.value, onChange: this.updateForm }),
                             _react2['default'].createElement('input', { type: 'submit', value: 'Post' })
                         )
                     )
@@ -368,7 +365,7 @@ var CommentForm = (function (_React$Component) {
 exports['default'] = CommentForm;
 module.exports = exports['default'];
 
-},{"../actions/CommentsActions":1,"react":"react","react-router":"react-router"}],7:[function(require,module,exports){
+},{"../actions/CommentsActions":1,"react":"react"}],7:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -389,11 +386,15 @@ var _react = require('react');
 
 var _react2 = _interopRequireDefault(_react);
 
-var _reactRouter = require('react-router');
-
 var _CommentForm = require("./CommentForm");
 
 var _CommentForm2 = _interopRequireDefault(_CommentForm);
+
+/**
+ * CommentsDetail is a component that represents one "block" of comments, which consists of
+ * 1) A comment replied directly to the project (replyId = 0)
+ * 2) All comments that are in response of the master comment or one another
+ */
 
 var CommentsDetail = (function (_React$Component) {
     _inherits(CommentsDetail, _React$Component);
@@ -413,27 +414,39 @@ var CommentsDetail = (function (_React$Component) {
         key: 'render',
         value: function render() {
             var _this = this;
+            var userUrl = 'http://www.diy.org/' + this.props.comment[0].url;
             var nestedComments = this.props.comment.slice().splice(1); //makes copy of nestedComments so props.comment is unmodified
             var comments = nestedComments.map(function (c) {
+                var userURL = 'http://www.diy.org/' + c.url;
                 return _react2['default'].createElement(
                     'div',
                     { className: 'nested-comments-container', key: c.rawDate },
-                    _react2['default'].createElement('img', { src: c.icon, width: '60px' }),
+                    _react2['default'].createElement(
+                        'a',
+                        { href: userURL },
+                        ' ',
+                        _react2['default'].createElement('img', { src: c.icon, width: '60px' }),
+                        ' '
+                    ),
                     _react2['default'].createElement(
                         'div',
                         { className: 'comments' },
                         _react2['default'].createElement(
                             'span',
                             null,
-                            ' ',
                             _react2['default'].createElement(
-                                'strong',
-                                null,
-                                ' ',
-                                c.user,
+                                'a',
+                                { href: userURL },
+                                '  ',
+                                _react2['default'].createElement(
+                                    'strong',
+                                    null,
+                                    ' ',
+                                    c.user,
+                                    ' '
+                                ),
                                 ' '
                             ),
-                            ' ',
                             c.date
                         ),
                         _react2['default'].createElement(
@@ -451,23 +464,36 @@ var CommentsDetail = (function (_React$Component) {
             return _react2['default'].createElement(
                 'div',
                 { className: 'comments-container', key: this.props.comment[0].rawDate },
-                _react2['default'].createElement('img', { src: this.props.comment[0].icon, width: '60px' }),
+                _react2['default'].createElement(
+                    'a',
+                    { href: userUrl },
+                    ' ',
+                    _react2['default'].createElement('img', { src: this.props.comment[0].icon, width: '60px' }),
+                    ' '
+                ),
                 _react2['default'].createElement(
                     'div',
                     { className: 'comments' },
                     _react2['default'].createElement(
                         'span',
                         null,
-                        ' ',
+                        '  ',
                         _react2['default'].createElement(
-                            'strong',
-                            null,
+                            'a',
+                            { href: userUrl },
                             ' ',
-                            this.props.comment[0].user,
+                            _react2['default'].createElement(
+                                'strong',
+                                null,
+                                ' ',
+                                this.props.comment[0].user,
+                                ' '
+                            ),
                             ' '
                         ),
                         ' ',
-                        this.props.comment[0].date
+                        this.props.comment[0].date,
+                        ' '
                     ),
                     _react2['default'].createElement(
                         'p',
@@ -493,7 +519,7 @@ var CommentsDetail = (function (_React$Component) {
 exports['default'] = CommentsDetail;
 module.exports = exports['default'];
 
-},{"./CommentForm":6,"react":"react","react-router":"react-router"}],8:[function(require,module,exports){
+},{"./CommentForm":6,"react":"react"}],8:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -514,8 +540,6 @@ var _react = require('react');
 
 var _react2 = _interopRequireDefault(_react);
 
-var _reactRouter = require('react-router');
-
 var _reactModal = require('react-modal');
 
 var _reactModal2 = _interopRequireDefault(_reactModal);
@@ -535,6 +559,13 @@ var _favourites2 = _interopRequireDefault(_favourites);
 var _comments = require('./comments');
 
 var _comments2 = _interopRequireDefault(_comments);
+
+/**
+ * ProjectView is a container component that renders the project view, which includes:
+ * 1) the overview with img/video
+ * 2) comments
+ * 3) favourites
+ */
 
 var ProjectView = (function (_React$Component) {
     _inherits(ProjectView, _React$Component);
@@ -576,14 +607,20 @@ var ProjectView = (function (_React$Component) {
     }, {
         key: 'render',
         value: function render() {
-            var comments = _react2['default'].createElement('br', null);
-            var favourites = _react2['default'].createElement('br', null);
-            var content = _react2['default'].createElement('br', null);
-            var modal = _react2['default'].createElement('br', null);
+            var comments = undefined,
+                favourites = undefined,
+                content = undefined,
+                modal = undefined;
+            comments = favourites = content = modal = _react2['default'].createElement('br', null);
+            var userURL = 'http://www.diy.org/' + this.state.project.url;
+
+            //load comments and favourites only if project can be found;
             if (this.state.loadSuccess) {
                 comments = _react2['default'].createElement(_comments2['default'], { userId: this.props.params.user, projectId: this.props.params.project });
                 favourites = _react2['default'].createElement(_favourites2['default'], { userId: this.props.params.user, projectId: this.props.params.project });
             }
+
+            //image and video display
             if (this.state.project.contentType == 'video') {
                 modal = _react2['default'].createElement(
                     _reactModal2['default'],
@@ -644,13 +681,17 @@ var ProjectView = (function (_React$Component) {
                                     _react2['default'].createElement(
                                         'footer',
                                         null,
-                                        _react2['default'].createElement('img', { src: this.state.project.iconsrc }),
                                         _react2['default'].createElement(
-                                            'span',
-                                            null,
-                                            ' ',
-                                            this.state.project.username,
-                                            ' '
+                                            'a',
+                                            { href: userURL },
+                                            _react2['default'].createElement('img', { src: this.state.project.iconsrc }),
+                                            _react2['default'].createElement(
+                                                'span',
+                                                null,
+                                                ' ',
+                                                this.state.project.username,
+                                                ' '
+                                            )
                                         )
                                     )
                                 )
@@ -686,7 +727,7 @@ var ProjectView = (function (_React$Component) {
 exports['default'] = ProjectView;
 module.exports = exports['default'];
 
-},{"../actions/ProjectViewAction":3,"../stores/ProjectViewStore":16,"./comments":10,"./favourites":11,"react":"react","react-modal":"react-modal","react-router":"react-router"}],9:[function(require,module,exports){
+},{"../actions/ProjectViewAction":3,"../stores/ProjectViewStore":16,"./comments":10,"./favourites":11,"react":"react","react-modal":"react-modal"}],9:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -706,6 +747,10 @@ function _inherits(subClass, superClass) { if (typeof superClass !== 'function' 
 var _react = require('react');
 
 var _react2 = _interopRequireDefault(_react);
+
+/**
+ * Whoops is a component that displays the 404 view.
+ */
 
 var Whoops = (function (_React$Component) {
     _inherits(Whoops, _React$Component);
@@ -790,8 +835,6 @@ var _react = require('react');
 
 var _react2 = _interopRequireDefault(_react);
 
-var _reactRouter = require('react-router');
-
 var _storesCommentsStore = require('../stores/CommentsStore');
 
 var _storesCommentsStore2 = _interopRequireDefault(_storesCommentsStore);
@@ -807,6 +850,12 @@ var _CommentsDetail2 = _interopRequireDefault(_CommentsDetail);
 var _CommentForm = require("./CommentForm");
 
 var _CommentForm2 = _interopRequireDefault(_CommentForm);
+
+/**
+ * Comments is a container component for
+ * 1) A list of CommentDetails for the project
+ * 2) A CommentForm at the end
+ */
 
 var Comments = (function (_React$Component) {
     _inherits(Comments, _React$Component);
@@ -894,7 +943,7 @@ var Comments = (function (_React$Component) {
 exports['default'] = Comments;
 module.exports = exports['default'];
 
-},{"../actions/CommentsActions":1,"../stores/CommentsStore":14,"./CommentForm":6,"./CommentsDetail":7,"react":"react","react-router":"react-router"}],11:[function(require,module,exports){
+},{"../actions/CommentsActions":1,"../stores/CommentsStore":14,"./CommentForm":6,"./CommentsDetail":7,"react":"react"}],11:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -915,8 +964,6 @@ var _react = require('react');
 
 var _react2 = _interopRequireDefault(_react);
 
-var _reactRouter = require('react-router');
-
 var _storesFavouritesStore = require('../stores/FavouritesStore');
 
 var _storesFavouritesStore2 = _interopRequireDefault(_storesFavouritesStore);
@@ -924,6 +971,10 @@ var _storesFavouritesStore2 = _interopRequireDefault(_storesFavouritesStore);
 var _actionsFavouritesActions = require('../actions/FavouritesActions');
 
 var _actionsFavouritesActions2 = _interopRequireDefault(_actionsFavouritesActions);
+
+/**
+ * Favourites is a component that renders a list of users who favourited the project.
+ */
 
 var Favourites = (function (_React$Component) {
     _inherits(Favourites, _React$Component);
@@ -966,17 +1017,21 @@ var Favourites = (function (_React$Component) {
         value: function render() {
             var _this = this;
             var users = this.state.favourites.map(function (user) {
+                var url = 'http://www.diy.org/' + user.url;
                 return _react2['default'].createElement(
                     'div',
                     { className: 'user' },
-                    _react2['default'].createElement('img', { src: user.icon }),
-                    ' ',
                     _react2['default'].createElement(
-                        'span',
-                        null,
-                        ' ',
-                        _this.truncate(user.username),
-                        ' '
+                        'a',
+                        { href: url },
+                        _react2['default'].createElement('img', { src: user.icon }),
+                        _react2['default'].createElement(
+                            'span',
+                            null,
+                            ' ',
+                            _this.truncate(user.username),
+                            ' '
+                        )
                     )
                 );
             });
@@ -1011,7 +1066,7 @@ var Favourites = (function (_React$Component) {
 exports['default'] = Favourites;
 module.exports = exports['default'];
 
-},{"../actions/FavouritesActions":2,"../stores/FavouritesStore":15,"react":"react","react-router":"react-router"}],12:[function(require,module,exports){
+},{"../actions/FavouritesActions":2,"../stores/FavouritesStore":15,"react":"react"}],12:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -1139,15 +1194,19 @@ var CommentsStore = (function () {
                     "id": a.id,
                     "replyId": a.reply };
             });
-
+            //First, find the thread starts - the master comments that reply directly to the project (replyId = 0);
             this.threadStarters = this.commentsRaw.filter(function (a) {
                 return a.replyId == 0;
             });
+
+            //For each thread starter, find the comments that are dependent on it
             this.comments = this.threadStarters.map(function (a) {
                 return _this.commentsManager(a, _this.commentsRaw);
             });
             this.size = data.length;
         }
+
+        //A BFS Algorithm to search all comments related to the thread starter;
     }, {
         key: 'commentsManager',
         value: function commentsManager(obj, data) {
@@ -1164,7 +1223,7 @@ var CommentsStore = (function () {
                     });
                     if (result) {
                         newReplyIds.push(a.id);
-                    };
+                    }
                     return result;
                 }));
                 if (newReplyIds.length > 0) {
@@ -1182,7 +1241,6 @@ var CommentsStore = (function () {
             commentblock = commentblock.reduce(function (a, b) {
                 return a.concat(b);
             });
-
             return commentblock;
         }
     }, {
@@ -1250,18 +1308,13 @@ var FavouritesStore = (function () {
         key: 'onGetFavouritesSuccess',
         value: function onGetFavouritesSuccess(data) {
             this.favourites = data.map(function (a) {
-                return { "username": a.nickname,
+                return {
+                    "username": a.nickname,
                     "url": a.url,
-                    "icon": a.avatar.icon.url };
+                    "icon": a.avatar.icon.url
+                };
             });
             this.size = data.length;
-        }
-    }, {
-        key: 'getDate',
-        value: function getDate(data) {
-            var d = new Date(data);
-            var date = d.toDateString().split(" ").splice(1);
-            return [date[0], " ", date[1], ", ", date[2]].join("");
         }
     }, {
         key: 'onGetFavouritesFail',
@@ -1307,6 +1360,7 @@ var ProjectViewStore = (function () {
         this.bindActions(_actionsProjectViewAction2['default']);
         this.project = {
             username: "",
+            url: "",
             iconsrc: "",
             title: "",
             date: "",
@@ -1321,6 +1375,7 @@ var ProjectViewStore = (function () {
         value: function onGetProjectSuccess(data) {
             this.project = {
                 username: data.maker.nickname,
+                url: data.maker.url,
                 iconsrc: data.maker.avatar.icon.url,
                 title: data.title,
                 date: this.getDate(data.stamp),

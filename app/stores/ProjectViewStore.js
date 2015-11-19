@@ -26,7 +26,7 @@ class ProjectViewStore {
             date: this.getDate(data.stamp),
             contentType: data.clips[0].type,
             contentSrc: this.getContent(data, data.clips[0].type)
-        }
+        };
         this.loadSuccess = true;
     }
 
@@ -35,9 +35,9 @@ class ProjectViewStore {
     }
 
     getContent(data, type){
-        if(type == 'video'){
+        if (type == 'video'){
             return [data.clips[0].assets.web_480.url, data.clips[0].assets.video_mp4.url];
-        } else{
+        } else {
             return data.clips[0].assets.web_480.url; //all assets should have web_480 preview
         }
     }

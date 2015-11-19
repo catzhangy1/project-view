@@ -1,20 +1,18 @@
 import React from 'react';
 
-
+/**
+ * App is the container component for all React components rendered.
+ */
 class App extends React.Component {
     constructor(props) {
         super(props);
 
     }
 
-    onChange(state) {
-        this.setState(state);
-    }
-
     render() {
         return (
             <div>
-            {this.props.children}
+                {this.props.children}
             </div>
         )
     }

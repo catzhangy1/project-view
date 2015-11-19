@@ -9,12 +9,12 @@ class ProjectViewAction {
     }
 
     getProject(userId, projectId, router) {
-        if(!userId || !projectId) {
+        if (!userId || !projectId) {
             return;
         }
-        $.ajax({ url: `http://api.diy.org/makers/${userId}/projects/${projectId}/` })
+        $.ajax({url: `http://api.diy.org/makers/${userId}/projects/${projectId}/`})
             .done((data) => {
-                this.actions.getProjectSuccess(data.response)
+                this.actions.getProjectSuccess(data.response);
             })
             .fail((jqXhr) => {
                 this.actions.getProjectFail(jqXhr);

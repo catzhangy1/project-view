@@ -1,8 +1,10 @@
 import React from 'react';
-import {Link} from 'react-router';
 import FavouritesStore from '../stores/FavouritesStore';
 import FavouritesActions from '../actions/FavouritesActions';
 
+/**
+ * Favourites is a component that renders a list of users who favourited the project.
+ */
 class Favourites extends React.Component {
     constructor(props) {
         super(props);
@@ -34,19 +36,21 @@ class Favourites extends React.Component {
     render() {
         let _this = this;
         let users = this.state.favourites.map(function (user) {
-            let url = `http://www.diy.org/${user.url}`;
-            return <div className = 'user'>
+            const url = `http://www.diy.org/${user.url}`;
+            return (
+                <div className = 'user'>
                     <a href ={url}>
-                        <img src= {user.icon}/> <span> {_this.truncate(user.username)} </span>
+                        <img src= {user.icon}/>
+                        <span> {_this.truncate(user.username)} </span>
                     </a>
                 </div>
-
+            )
         });
 
         return (
             <div>
                 <div className='header-title'>
-                    <img src= "/img/favorite.svg" width='24px' height='24px'/>
+                    <img src="/img/favorite.svg" width='24px' height='24px'/>
                     <span> {this.state.size} Favourites</span>
                 </div>
                 <div className='bi-section'>
