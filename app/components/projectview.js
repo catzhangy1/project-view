@@ -41,11 +41,12 @@ class ProjectView extends React.Component {
                     <div className='project-container'>
                         <div className='row'>
                             <div className='col-md-8'>
-                                <img src={this.state.project.contentSrc} width='auto'/></div>
+                                <img src={this.state.project.contentSrc} width='auto'/>
+                                <img id='favourite' src='/img/favorite.svg' width='50px' height='50px'/>
+                            </div>
                             <div className='col-md-4 img'>
                                 <h3>{this.state.project.title}</h3>
                                 <p>{this.state.project.date}</p>
-
                                 <footer>
                                     <img src={this.state.project.iconsrc} />
                                     <span> {this.state.project.username} </span>

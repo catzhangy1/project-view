@@ -145,14 +145,12 @@ var ProjectViewAction = (function () {
             if (!userId || !projectId) {
                 return;
             }
-            var result = true;
             $.ajax({ url: 'http://api.diy.org/makers/' + userId + '/projects/' + projectId + '/' }).done(function (data) {
                 _this.actions.getProjectSuccess(data.response);
             }).fail(function (jqXhr) {
                 _this.actions.getProjectFail(jqXhr);
                 router.pushState(null, "/");
             });
-            return result;
         }
     }]);
 
@@ -209,12 +207,6 @@ var App = (function (_React$Component) {
     }
 
     _createClass(App, [{
-        key: 'componentDidMount',
-        value: function componentDidMount() {}
-    }, {
-        key: 'componentWillUnmount',
-        value: function componentWillUnmount() {}
-    }, {
         key: 'onChange',
         value: function onChange(state) {
             this.setState(state);
@@ -222,11 +214,6 @@ var App = (function (_React$Component) {
     }, {
         key: 'render',
         value: function render() {
-            console.log(this.props);
-            //<ProjectView
-            //    userId={this.props.params.user}
-            //    projectId={this.props.params.project}
-            //    router={this.props.history}/>
             return _react2['default'].createElement(
                 'div',
                 null,
@@ -554,8 +541,6 @@ var ProjectView = (function (_React$Component) {
         _get(Object.getPrototypeOf(ProjectView.prototype), 'constructor', this).call(this, props);
         this.state = _storesProjectViewStore2['default'].getState();
         this.onChange = this.onChange.bind(this);
-        console.log(this.props);
-        console.log(this.props.params.user);
     }
 
     _createClass(ProjectView, [{
@@ -602,7 +587,8 @@ var ProjectView = (function (_React$Component) {
                                 _react2['default'].createElement(
                                     'div',
                                     { className: 'col-md-8' },
-                                    _react2['default'].createElement('img', { src: this.state.project.contentSrc, width: 'auto' })
+                                    _react2['default'].createElement('img', { src: this.state.project.contentSrc, width: 'auto' }),
+                                    _react2['default'].createElement('img', { id: 'favourite', src: '/img/favorite.svg', width: '50px', height: '50px' })
                                 ),
                                 _react2['default'].createElement(
                                     'div',
@@ -695,7 +681,7 @@ var Whoops = (function (_React$Component) {
     _createClass(Whoops, [{
         key: 'componentDidMount',
         value: function componentDidMount() {
-            console.log("I did mount");
+            //console.log("I did mount");
         }
     }, {
         key: 'render',
@@ -716,15 +702,16 @@ var Whoops = (function (_React$Component) {
                         null,
                         'Whoops-'
                     ),
+                    _react2['default'].createElement('hr', null),
                     _react2['default'].createElement(
                         'p',
                         null,
-                        ' Looks like the project you\'re looking for isn\'t here, or you\'re just wild! '
+                        ' Looks like the project you\'re looking for isn\'t here, or you\'re just being wild! '
                     ),
                     _react2['default'].createElement('hr', null),
                     _react2['default'].createElement(
                         'p',
-                        { style: 'color: #FFAB97' },
+                        { style: { color: '#FFAB97' } },
                         ' ',
                         _react2['default'].createElement(
                             'i',
@@ -1056,9 +1043,10 @@ var _componentsProjectView2 = _interopRequireDefault(_componentsProjectView);
 
 var routes = _react2['default'].createElement(
     _reactRouter.Route,
-    { path: '/', component: _componentsApp2['default'] },
+    { component: _componentsApp2['default'] },
     _react2['default'].createElement(_reactRouter.IndexRoute, { component: _componentsWhoops2['default'] }),
-    _react2['default'].createElement(_reactRouter.Route, { path: ':user/:project', component: _componentsProjectView2['default'] })
+    _react2['default'].createElement(_reactRouter.Route, { path: ':user/:project', component: _componentsProjectView2['default'] }),
+    _react2['default'].createElement(_reactRouter.Route, { path: '/*', component: _componentsWhoops2['default'] })
 );
 exports['default'] = routes;
 module.exports = exports['default'];
