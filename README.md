@@ -3,21 +3,31 @@
 
 *Catherine Zhang* <br>
 
+** Testing on Node Server** <br>
+I used the following commands to start up my project locally:
+
+```
+gulp
+```
+followed by
+
+```
+npm run watch
+```
+
 **Purpose & Features** <br>
 This full stack challenge delivers a project detail view via a Node.js server with React + Flux for client-side rendering. For a given
 maker's name and project Id, the core details of the project, followed by a comments box
 and a list of users who favourited the project, are showcased. The page has been tested locally on a Chrome browser. <br>
 
-> 1. <b></b> - Given a url at the maker's name followed by the project ID, the project view
-
-> 2. <b>Routes and Links</b> - The page navigates to a 404 view for any url that does not follow the
+> 1. <b>Routes and Links</b> - The page navigates to a 404 view for any url that does not follow the
 				/makerId/projectId format. Each user view displayed on the page is linked to to their page on
 				http://www.diy.org/makerId.
 
-> 3. <b>Content Display</b> - The page shows the two possible types of content for a project: image and video.
+> 2. <b>Content Display</b> - The page shows the two possible types of content for a project: image and video.
 				Videos are played in a modal dialog from clicking on the video preview.
 
-> 4. <b>Comments</b> - The comments section displays current comments and allows user (me) to post comments.
+> 3. <b>Comments</b> - The comments section displays current comments and allows user (me) to post comments.
 				The comments are grouped in a way that thread starters -- comments that reply directly to the project --
 				are showed with the rest of the thread -- comments that respond to the thread starter or to other thread responses
 				-- indented in a block. Another feature of the comments is the ability to reply as a thread starter or to an existing
@@ -41,5 +51,8 @@ And lessons learned!
 				(Replacing trailing characters with '...', which depended on the size of the div, which I assume to be flexible).
 				I used a very simple truncate function here, but I wonder what the right approach would have been.
 
-> 4. <b> Performance </b> A valid project page takes awhile to render. Are there ways to load (lazily) so the important components
-				are prioritized? How can I improve performance in general? 
+> 4. <b> Performance </b> - A valid project page takes awhile to render. Are there ways to load (lazily) so the important components
+				are prioritized? How can I improve performance in general?
+
+> 5. <b> Misc </b> - Did not implement the icons for the categories ('2D Animation', 'Various Drawing Styles', etc.). It seemed
+				like the main API calls did not return any information regarding them.
